@@ -7,7 +7,6 @@ import {zkMysticSender} from "../src/zkMysticSender.sol";
 
 contract SetReceiver is Script {
     HelperConfig public helperConfig = new HelperConfig();
-    zkMysticSender public sender;
 
     function setReceiver(address _receiver, address _sender) public {
         vm.startBroadcast();

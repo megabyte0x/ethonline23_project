@@ -42,16 +42,19 @@ ifeq ($(findstring --network goerli,$(ARGS)),--network goerli)
 endif
 
 deployNFT:
-	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT
+	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT $(NETWORK_ARGS)
 
 deploySender:
-	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender
+	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender $(NETWORK_ARGS)
 
 deployReceiver:
-	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver
+	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver $(NETWORK_ARGS)
 	
 setReceiver:
-	@forge script script/Interaction.s.sol:SetReceiver 
+	@forge script script/Interaction.s.sol:SetReceiver $(NETWORK_ARGS)
+
+setUp:
+	make deployNFT && make deploySender && make deployReceiver && make setReceiver
 
 deploySenderOnzkEVM:
 	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY) -vvvv
