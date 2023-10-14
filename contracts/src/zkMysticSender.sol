@@ -51,7 +51,7 @@ contract zkMysticSender is IBridgeMessageReceiver {
     }
 
     modifier isZeroAddress(address _address) {
-        if (_address != address(0)) revert ZkMystics__ZeroAddress();
+        if (_address == address(0)) revert ZkMystics__ZeroAddress();
         _;
     }
 

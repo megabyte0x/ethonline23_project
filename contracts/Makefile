@@ -41,6 +41,8 @@ ifeq ($(findstring --network goerli,$(ARGS)),--network goerli)
 	NETWORK_ARGS := --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
 endif
 
+# Commands for Local
+
 deployNFT:
 	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT $(NETWORK_ARGS)
 
@@ -53,17 +55,33 @@ deployReceiver:
 setReceiver:
 	@forge script script/Interaction.s.sol:SetReceiver $(NETWORK_ARGS)
 
+
 setUp:
-	make deployNFT && make deploySender && make deployReceiver && make setReceiver
+	make deployNFT && make deploySender && make deployReceiver && make setReceiver 
+
+checkStatusForERC20:
+	@forge script script/Interaction.s.sol:CheckStatusForERC20  $(NETWORK_ARGS)
+
+
+# Commands for Testnet
+
+deployNFTOnzkEVM:
+	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY)
 
 deploySenderOnzkEVM:
-	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY) -vvvv
+	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY)
 
 deployReceiverOnGoerli:
-	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
-
-deploySetReceiverOnzkEVM:
-	@forge script script/Interaction.s.sol:SetReceiver $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY) -vvvv
+	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY)
 
 setReceiverOnzkEVM:
-	@forge script script/Interaction.s.sol:SetReceiver $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast -vvvv
+	@forge script script/Interaction.s.sol:SetReceiver --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
+
+setUpOnChain:
+	make deployNFTOnzkEVM && make deploySenderOnzkEVM && make deployReceiverOnGoerli && make setReceiverOnzkEVM
+
+checkStatusForERC20OnzkEVM:
+	@forge script script/Interaction.s.sol:CheckStatusForERC20 --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
+
+
+
