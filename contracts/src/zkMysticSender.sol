@@ -42,13 +42,13 @@ contract zkMysticSender is IBridgeMessageReceiver {
     );
 
     IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
-    uint32 public immutable i_networkID;
+    // uint32 public immutable i_networkID;
     address public immutable i_zkMysticsNFTAddress;
     address public s_zkMysticsReceiverAddress;
 
     constructor(address _polygonZkEVMBridge, address _zkMysticNFT) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
-        i_networkID = i_polygonZkEVMBridge.networkID();
+        // i_networkID = i_polygonZkEVMBridge.networkID();
         i_zkMysticsNFTAddress = _zkMysticNFT;
     }
 

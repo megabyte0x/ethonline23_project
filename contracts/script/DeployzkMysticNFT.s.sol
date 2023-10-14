@@ -7,7 +7,9 @@ import {zkMysticNFT} from "../src/zkMysticNFT.sol";
 
 contract DeployzkMysticNFT is Script {
     function run() public returns (address nftAddress) {
+        vm.startBroadcast();
         zkMysticNFT nft = new zkMysticNFT();
+        vm.stopBroadcast();
         return address(nft);
     }
 }

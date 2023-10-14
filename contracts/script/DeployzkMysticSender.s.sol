@@ -22,10 +22,10 @@ contract DeployzkMysticSender is Script {
         address nftAddress = helperConfig.getZkMysticNFTAddress();
         address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
 
-        deployMysticSender(bridgeAddress, nftAddress);
+        return deployMysticSender(bridgeAddress, nftAddress);
     }
 
-    function run() public returns (address) {
+    function run() public returns (address senderAddress) {
         return deployUsingConfigs();
     }
 }
