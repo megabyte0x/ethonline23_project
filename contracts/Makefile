@@ -49,3 +49,6 @@ deploySender:
 
 deployReceiver:
 	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver $(NETWORK_ARGS)
+
+setReceiver:
+	@forge script script/Interaction.s.sol:SetReceiver $(NETWORK_ARGS)

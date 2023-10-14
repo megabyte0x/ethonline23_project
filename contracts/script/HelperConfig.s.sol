@@ -14,4 +14,8 @@ contract HelperConfig is Script {
     function getZkMysticSenderAddress() public returns (address) {
         return DevOpsTools.get_most_recent_deployment("zkMysticSender", block.chainid);
     }
+
+    function getZkMysticReceiverAddress() public returns (address) {
+        return DevOpsTools.get_most_recent_deployment("zkMysticReceiver", block.chainid);
+    }
 }
