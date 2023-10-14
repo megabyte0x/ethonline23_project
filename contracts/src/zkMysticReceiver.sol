@@ -30,7 +30,7 @@ import {IPolygonZkEVMBridge} from "./polygonZKEVMContracts/interfaces/IPolygonZk
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-contract ZkMysticsReceiver is IBridgeMessageReceiver {
+contract zkMysticReceiver is IBridgeMessageReceiver {
     error ZkMystics__InvalidBridgeMessageSender();
     error ZkMystics__InvalidZkMyticsAddress();
     error ZkMystics__ZeroAddress();

@@ -27,12 +27,11 @@ pragma solidity 0.8.17;
 import {IBasePolygonZkEVMGlobalExitRoot} from "./polygonZKEVMContracts/interfaces/IBasePolygonZkEVMGlobalExitRoot.sol";
 import {IBridgeMessageReceiver} from "./polygonZKEVMContracts/interfaces/IBridgeMessageReceiver.sol";
 import {IPolygonZkEVMBridge} from "./polygonZKEVMContracts/interfaces/IPolygonZkEVMBridge.sol";
-import {zkMysticsNFT} from "./ZkMysticsNFT.sol";
+import {zkMysticNFT} from "./zkMysticNFT.sol";
 
-contract ZkMysticsSender is IBridgeMessageReceiver {
+contract zkMysticSender is IBridgeMessageReceiver {
     error ZkMystics__InvalidBridgeMessageSender();
     error ZkMystics__InvalidZkMyticsReceiverAddress();
-
     error ZkMystics__ZeroAddress();
 
     event ZkMystics__CheckStatusRequestCreated(
@@ -47,10 +46,10 @@ contract ZkMysticsSender is IBridgeMessageReceiver {
     address public immutable i_zkMysticsNFTAddress;
     address public s_zkMysticsReceiverAddress;
 
-    constructor(address _polygonZkEVMBridge) {
+    constructor(address _polygonZkEVMBridge, address _zkMysticNFT) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
         i_networkID = i_polygonZkEVMBridge.networkID();
-        i_zkMysticsNFTAddress = address(new zkMysticsNFT());
+        i_zkMysticsNFTAddress = _zkMysticNFT;
     }
 
     modifier isZeroAddress(address _address) {
@@ -107,7 +106,7 @@ contract ZkMysticsSender is IBridgeMessageReceiver {
         (address userAddress, bool result) = abi.decode(data, (address, bool));
 
         if (result) {
-            zkMysticsNFT(i_zkMysticsNFTAddress).mintNFT(userAddress);
+            zkMysticNFT(i_zkMysticsNFTAddress).mintNFT(userAddress);
         }
     }
 }
