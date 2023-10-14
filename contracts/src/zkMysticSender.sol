@@ -57,7 +57,7 @@ contract zkMysticSender is IBridgeMessageReceiver {
         _;
     }
 
-    function setReceiverAddress(address _receiverAddress) external {
+    function setReceiver(address _receiverAddress) external {
         s_zkMysticsReceiverAddress = _receiverAddress;
     }
 
