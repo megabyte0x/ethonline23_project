@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
@@ -9,9 +9,9 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 contract DeployzkMysticReceiver is Script {
     HelperConfig public helperConfig = new HelperConfig();
 
-    function deployMysticSender(address _bridgeAddress, address _senderAddress) public returns (address) {
+    function deployMysticReceiver(address _bridgeAddress, address _senderAddress) public returns (address) {
         vm.startBroadcast();
-        zkMysticSender receiver = new zkMysticReceiver(_bridgeAddress, _senderAddress);
+        zkMysticReceiver receiver = new zkMysticReceiver(_bridgeAddress, _senderAddress);
         vm.stopBroadcast();
 
         console.log("zkMysticReceiver deployed at address: %s", address(receiver));
@@ -22,7 +22,7 @@ contract DeployzkMysticReceiver is Script {
         address senderAddress = helperConfig.getZkMysticSenderAddress();
         address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
 
-        deployMysticReceiver(bridgeAddress, senderAddress);
+        return deployMysticReceiver(bridgeAddress, senderAddress);
     }
 
     function run() public returns (address) {
