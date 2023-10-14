@@ -41,4 +41,11 @@ ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
 	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
 endif
 
+deployNFT:
+	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT $(NETWORK_ARGS)
 
+deploySender:
+	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender $(NETWORK_ARGS)
+
+deployReceiver:
+	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver $(NETWORK_ARGS)

@@ -25,7 +25,7 @@ contract DeployzkMysticReceiver is Script {
         return deployMysticReceiver(bridgeAddress, senderAddress);
     }
 
-    function run() public returns (address) {
+    function run() public returns (address receiverAddress) {
         return deployUsingConfigs();
     }
 }

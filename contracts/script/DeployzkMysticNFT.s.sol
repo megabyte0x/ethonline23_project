@@ -6,7 +6,7 @@ import {console} from "forge-std/console.sol";
 import {zkMysticNFT} from "../src/zkMysticNFT.sol";
 
 contract DeployzkMysticNFT is Script {
-    function run() public returns (address) {
+    function run() public returns (address nftAddress) {
         zkMysticNFT nft = new zkMysticNFT();
         return address(nft);
     }
