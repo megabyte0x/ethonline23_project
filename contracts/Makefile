@@ -37,18 +37,30 @@ anvil :; anvil -m 'test test test test test test test test test test test junk' 
 
 NETWORK_ARGS := --rpc-url http://localhost:8545 --private-key $(DEFAULT_ANVIL_KEY) --broadcast
 
-ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
-	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+ifeq ($(findstring --network goerli,$(ARGS)),--network goerli)
+	NETWORK_ARGS := --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
 endif
 
 deployNFT:
-	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT $(NETWORK_ARGS)
+	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT
 
 deploySender:
-	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender $(NETWORK_ARGS)
+	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender
 
 deployReceiver:
-	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver $(NETWORK_ARGS)
-
+	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver
+	
 setReceiver:
-	@forge script script/Interaction.s.sol:SetReceiver $(NETWORK_ARGS)
+	@forge script script/Interaction.s.sol:SetReceiver 
+
+deploySenderOnzkEVM:
+	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY) -vvvv
+
+deployReceiverOnGoerli:
+	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+
+deploySetReceiverOnzkEVM:
+	@forge script script/Interaction.s.sol:SetReceiver $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY) -vvvv
+
+setReceiverOnzkEVM:
+	@forge script script/Interaction.s.sol:SetReceiver $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast -vvvv
