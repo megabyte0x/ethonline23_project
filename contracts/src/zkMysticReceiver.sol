@@ -43,14 +43,13 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
     );
 
     IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
-    // uint32 public immutable i_networkID;
+    uint32 public constant DESTINATION_NETWORK_ID = 1;
     address public immutable i_zkMysticsSenderAddress;
 
     mapping(address => bool) public userAddressToMintNFT;
 
     constructor(address _polygonZkEVMBridge, address _zkMysticsSenderAddress) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
-        // i_networkID = i_polygonZkEVMBridge.networkID();
         i_zkMysticsSenderAddress = _zkMysticsSenderAddress;
     }
 
@@ -62,7 +61,6 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
 
         bool result;
         uint256 balance;
-        uint32 _destinationNetwork = 1;
         bool _forceUpdateGlobalExitRoot = true;
         bytes memory messageData;
 
@@ -82,7 +80,7 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
         messageData = abi.encode(userAddress, result);
 
         i_polygonZkEVMBridge.bridgeMessage(
-            _destinationNetwork, i_zkMysticsSenderAddress, _forceUpdateGlobalExitRoot, messageData
+            DESTINATION_NETWORK_ID, i_zkMysticsSenderAddress, _forceUpdateGlobalExitRoot, messageData
         );
     }
 }

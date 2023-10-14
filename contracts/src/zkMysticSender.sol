@@ -34,21 +34,19 @@ contract zkMysticSender is IBridgeMessageReceiver {
     error ZkMystics__InvalidZkMyticsReceiverAddress();
     error ZkMystics__ZeroAddress();
 
-    event ZkMystics__CheckStatusRequestCreated(
-        address indexed userAddress, address indexed assetAddress, uint32 indexed destinationNetwork
-    );
+    event ZkMystics__CheckStatusRequestCreated(address indexed userAddress, address indexed assetAddress);
     event ZkMystics__StatusChecked(
         address indexed userAddress, address indexed assetAddress, uint8 assetType, bool indexed result
     );
 
     IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
-    // uint32 public immutable i_networkID;
+    uint32 public constant DESTINATION_NETWORK_ID = 0;
+
     address public immutable i_zkMysticsNFTAddress;
     address public s_zkMysticsReceiverAddress;
 
     constructor(address _polygonZkEVMBridge, address _zkMysticNFT) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
-        // i_networkID = i_polygonZkEVMBridge.networkID();
         i_zkMysticsNFTAddress = _zkMysticNFT;
     }
 
@@ -61,7 +59,7 @@ contract zkMysticSender is IBridgeMessageReceiver {
         s_zkMysticsReceiverAddress = _receiverAddress;
     }
 
-    function checkStatusForERC20(address _assetAddress, uint32 _destinationNetwork, bool _forceUpdateGlobalExitRoot)
+    function checkStatusForERC20(address _assetAddress, bool _forceUpdateGlobalExitRoot)
         external
         isZeroAddress(_assetAddress)
     {
@@ -74,10 +72,10 @@ contract zkMysticSender is IBridgeMessageReceiver {
         bytes memory messageData = abi.encode(msg.sender, _assetAddress, assetType);
 
         i_polygonZkEVMBridge.bridgeMessage(
-            _destinationNetwork, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
+            DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
         );
 
-        emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress, _destinationNetwork);
+        emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
     }
 
     function checkStatusForERC721(address _assetAddress, uint32 _destinationNetwork, bool _forceUpdateGlobalExitRoot)
@@ -93,10 +91,10 @@ contract zkMysticSender is IBridgeMessageReceiver {
         bytes memory messageData = abi.encode(msg.sender, _assetAddress, assetType);
 
         i_polygonZkEVMBridge.bridgeMessage(
-            _destinationNetwork, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
+            DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
         );
 
-        emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress, _destinationNetwork);
+        emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
     }
 
     function onMessageReceived(address originAddress, uint32 originNetwork, bytes memory data) external payable {
