@@ -51,7 +51,7 @@ contract zkMysticSender is IBridgeMessageReceiver {
     }
 
     modifier isZeroAddress(address _address) {
-        if (_address != address(0)) revert ZkMystics__ZeroAddress();
+        if (_address == address(0)) revert ZkMystics__ZeroAddress();
         _;
     }
 
@@ -78,7 +78,7 @@ contract zkMysticSender is IBridgeMessageReceiver {
         emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
     }
 
-    function checkStatusForERC721(address _assetAddress, uint32 _destinationNetwork, bool _forceUpdateGlobalExitRoot)
+    function checkStatusForERC721(address _assetAddress, bool _forceUpdateGlobalExitRoot)
         external
         isZeroAddress(_assetAddress)
     {
