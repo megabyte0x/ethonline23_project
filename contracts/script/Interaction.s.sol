@@ -49,3 +49,25 @@ contract CheckStatusForERC20 is Script {
         checkStatusForERC20UsingConfigs();
     }
 }
+
+contract CheckStatusForERC721 is Script {
+    HelperConfig public helperConfig = new HelperConfig();
+
+    function checkStatus(address _sender, address _asset, bool _forceUpdateGlobalExitRoot) public {
+        vm.startBroadcast();
+        zkMysticSender(_sender).checkStatusForERC721(_asset, _forceUpdateGlobalExitRoot);
+        vm.stopBroadcast();
+    }
+
+    function checkStatusForERC721UsingConfigs() public {
+        address senderAddress = helperConfig.getZkMysticSenderAddress();
+        address assetAddress = helperConfig.ERC721_ADDRESS();
+        bool forceUpdateGlobalExitRoot = true;
+
+        checkStatus(senderAddress, assetAddress, forceUpdateGlobalExitRoot);
+    }
+
+    function run() external {
+        checkStatusForERC721UsingConfigs();
+    }
+}

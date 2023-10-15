@@ -82,6 +82,7 @@ setUpOnChain:
 
 checkStatusForERC20OnzkEVM:
 	@forge script script/Interaction.s.sol:CheckStatusForERC20 --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
-
+checkStatusForERC721OnzkEVM:
+	@forge script script/Interaction.s.sol:CheckStatusForERC721 --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast -vvvvv
 
 
