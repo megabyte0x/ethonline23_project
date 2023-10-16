@@ -8,3 +8,15 @@
   box-sizing: border-box;
   transition: all 1s;
 }
+
+.inSh {
+  box-shadow: 0px 0px 6px 6px rgba(0, 0, 0, 0.25) inset;
+}
+
+.bgSh {
+  box-shadow: 0px 0px 30px 1px rgba(0, 0, 0, 0.39);
+}
+
+.outSh {
+  box-shadow: -3px -3px 6px 6px rgba(0, 0, 0, 0.25) inset;
+}
