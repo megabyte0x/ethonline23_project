@@ -13,16 +13,29 @@ contract HelperConfig is Script {
 
     uint256 public constant POLYGON_ZKEVM_CHAIN_ID = 1442;
     uint256 public constant GOERLI_CHAIN_ID = 5;
+    uint256 public constant GAS_PAYMENT = 1e16;
 
     function getZkMysticNFTAddress() public returns (address) {
-        return DevOpsTools.get_most_recent_deployment("zkMysticNFT", POLYGON_ZKEVM_CHAIN_ID);
+        if (block.chainid == GOERLI_CHAIN_ID) {
+            return DevOpsTools.get_most_recent_deployment("zkMysticNFT", GOERLI_CHAIN_ID);
+        } else {
+            return DevOpsTools.get_most_recent_deployment("zkMysticNFT", POLYGON_ZKEVM_CHAIN_ID);
+        }
     }
 
     function getZkMysticSenderAddress() public returns (address) {
-        return DevOpsTools.get_most_recent_deployment("zkMysticSender", POLYGON_ZKEVM_CHAIN_ID);
+        if (block.chainid == GOERLI_CHAIN_ID) {
+            return DevOpsTools.get_most_recent_deployment("zkMysticSender", GOERLI_CHAIN_ID);
+        } else {
+            return DevOpsTools.get_most_recent_deployment("zkMysticSender", POLYGON_ZKEVM_CHAIN_ID);
+        }
     }
 
     function getZkMysticReceiverAddress() public returns (address) {
-        return DevOpsTools.get_most_recent_deployment("zkMysticReceiver", GOERLI_CHAIN_ID);
+        if (block.chainid == GOERLI_CHAIN_ID) {
+            return DevOpsTools.get_most_recent_deployment("zkMysticReceiver", POLYGON_ZKEVM_CHAIN_ID);
+        } else {
+            return DevOpsTools.get_most_recent_deployment("zkMysticReceiver", GOERLI_CHAIN_ID);
+        }
     }
 }
