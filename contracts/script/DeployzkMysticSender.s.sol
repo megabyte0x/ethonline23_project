@@ -7,25 +7,29 @@ import {zkMysticSender} from "../src/zkMysticSender.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployzkMysticSender is Script {
-    HelperConfig public helperConfig = new HelperConfig();
-
-    function deployMysticSender(address _bridgeAddress, address _nftAddress) public returns (address) {
+    function deployMysticSender(address _bridgeAddress, address _nftAddress, address _mailbox, address _gasPaymaster)
+        public
+        returns (address)
+    {
         vm.startBroadcast();
-        zkMysticSender sender = new zkMysticSender(_bridgeAddress, _nftAddress);
+        zkMysticSender sender = new zkMysticSender(_bridgeAddress, _nftAddress, _mailbox, _gasPaymaster);
         vm.stopBroadcast();
 
-        console.log("zkMysticSender deployed at address: %s", address(sender));
+        console.log("zkMysticSender deployed on chainId %s at address: %s", block.chainid, address(sender));
         return address(sender);
     }
 
     function deployUsingConfigs() public returns (address) {
-        address nftAddress = helperConfig.getZkMysticNFTAddress();
+        HelperConfig helperConfig = new HelperConfig();
+
+        (,, address mailbox, address gasPaymaster) = helperConfig.networkConfig();
+        address nftAddress = helperConfig.getZkMysticNFTAddress(block.chainid);
         address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
 
-        return deployMysticSender(bridgeAddress, nftAddress);
+        return deployMysticSender(bridgeAddress, nftAddress, mailbox, gasPaymaster);
     }
 
     function run() public returns (address senderAddress) {
-        return deployUsingConfigs();
+        senderAddress = deployUsingConfigs();
     }
 }

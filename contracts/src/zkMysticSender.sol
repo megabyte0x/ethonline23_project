@@ -28,11 +28,21 @@ import {IBasePolygonZkEVMGlobalExitRoot} from "./polygonZKEVMContracts/interface
 import {IBridgeMessageReceiver} from "./polygonZKEVMContracts/interfaces/IBridgeMessageReceiver.sol";
 import {IPolygonZkEVMBridge} from "./polygonZKEVMContracts/interfaces/IPolygonZkEVMBridge.sol";
 import {zkMysticNFT} from "./zkMysticNFT.sol";
+import {IInterchainGasPaymaster} from "@hyperlane-xyz/core/contracts/interfaces/IInterchainGasPaymaster.sol";
+import {IMailbox} from "@hyperlane-xyz/core/contracts/interfaces/IMailbox.sol";
 
+/**
+ * @title zkMysticSender
+ * @author Megabyte
+ * @notice This contract is reponsible for sending the message to the receiver contract on the Goerli Testnet and others.
+ * @notice The base chain for this contract is the Polygon zkEVM Testnet.
+ */
 contract zkMysticSender is IBridgeMessageReceiver {
     error ZkMystics__InvalidBridgeMessageSender();
     error ZkMystics__InvalidZkMyticsReceiverAddress();
     error ZkMystics__ZeroAddress();
+    error ZkMystics__InvalidMailbox();
+    error zkMysticSender__InsufficientAmountForInterchainGasPayment(uint256 _amount, uint256 _quote);
 
     event ZkMystics__NFTMinted(address indexed userAddress);
     event ZkMystics__StatusFailed(address indexed userAddress);
@@ -41,15 +51,22 @@ contract zkMysticSender is IBridgeMessageReceiver {
         address indexed userAddress, address indexed assetAddress, uint8 assetType, bool indexed result
     );
 
-    IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
-    uint32 public constant DESTINATION_NETWORK_ID = 0;
+    uint32 public constant GOERLI_DESTINATION_NETWORK_ID = 0;
+    uint256 public constant GOERLI_CHAIN_ID = 5;
+    uint256 public constant POLYGON_ZKEVM_TESTNET_CHAIN_ID = 1442;
 
+    IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
     address public immutable i_zkMysticsNFTAddress;
+    address public immutable i_mailbox;
+    address public immutable i_gasPaymaster;
+
     address public s_zkMysticsReceiverAddress;
 
-    constructor(address _polygonZkEVMBridge, address _zkMysticNFT) {
+    constructor(address _polygonZkEVMBridge, address _zkMysticNFT, address _mailbox, address _gasPaymaster) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
         i_zkMysticsNFTAddress = _zkMysticNFT;
+        i_mailbox = _mailbox;
+        i_gasPaymaster = _gasPaymaster;
     }
 
     modifier isZeroAddress(address _address) {
@@ -61,8 +78,9 @@ contract zkMysticSender is IBridgeMessageReceiver {
         s_zkMysticsReceiverAddress = _receiverAddress;
     }
 
-    function checkStatusForERC20(address _assetAddress, bool _forceUpdateGlobalExitRoot)
+    function checkStatusForERC20(address _assetAddress, uint32 _destinationId, bool _forceUpdateGlobalExitRoot)
         external
+        payable
         isZeroAddress(_assetAddress)
     {
         /**
@@ -72,16 +90,25 @@ contract zkMysticSender is IBridgeMessageReceiver {
         uint8 assetType = 1;
 
         bytes memory messageData = abi.encode(msg.sender, _assetAddress, assetType);
-
-        i_polygonZkEVMBridge.bridgeMessage(
-            DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
-        );
-
+        if (block.chainid == POLYGON_ZKEVM_TESTNET_CHAIN_ID && _destinationId == GOERLI_CHAIN_ID) {
+            i_polygonZkEVMBridge.bridgeMessage(
+                GOERLI_DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
+            );
+        } else {
+            bytes32 messageId =
+                IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(s_zkMysticsReceiverAddress), messageData);
+            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
+            if (msg.value < quote) revert zkMysticSender__InsufficientAmountForInterchainGasPayment(msg.value, quote);
+            IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
+                messageId, _destinationId, 1500000, msg.sender
+            );
+        }
         emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
     }
 
-    function checkStatusForERC721(address _assetAddress, bool _forceUpdateGlobalExitRoot)
+    function checkStatusForERC721(address _assetAddress, uint32 _destinationId, bool _forceUpdateGlobalExitRoot)
         external
+        payable
         isZeroAddress(_assetAddress)
     {
         /**
@@ -92,9 +119,18 @@ contract zkMysticSender is IBridgeMessageReceiver {
 
         bytes memory messageData = abi.encode(msg.sender, _assetAddress, assetType);
 
-        i_polygonZkEVMBridge.bridgeMessage(
-            DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
-        );
+        if (block.chainid == POLYGON_ZKEVM_TESTNET_CHAIN_ID && _destinationId == GOERLI_CHAIN_ID) {
+            i_polygonZkEVMBridge.bridgeMessage(
+                GOERLI_DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
+            );
+        } else {
+            bytes32 messageId =
+                IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(s_zkMysticsReceiverAddress), messageData);
+            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 10000);
+            IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
+                messageId, _destinationId, 10000, msg.sender
+            );
+        }
 
         emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
     }
@@ -111,5 +147,23 @@ contract zkMysticSender is IBridgeMessageReceiver {
         } else {
             emit ZkMystics__StatusFailed(userAddress);
         }
+    }
+
+    function handle(uint32 _origin, bytes32 _sender, bytes memory data) external {
+        if (msg.sender != i_mailbox) revert ZkMystics__InvalidMailbox();
+
+        (address userAddress, bool result) = abi.decode(data, (address, bool));
+
+        if (result) {
+            emit ZkMystics__NFTMinted(userAddress);
+            zkMysticNFT(i_zkMysticsNFTAddress).mintNFT(userAddress);
+        } else {
+            emit ZkMystics__StatusFailed(userAddress);
+        }
+    }
+
+    // converts address to bytes32
+    function addressToBytes32(address _addr) internal pure returns (bytes32) {
+        return bytes32(uint256(uint160(_addr)));
     }
 }

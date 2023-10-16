@@ -2,7 +2,7 @@
 pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
-import {console} from "forge-std/console.sol";
+import {console2} from "forge-std/console2.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 import {zkMysticSender} from "../src/zkMysticSender.sol";
 
@@ -13,11 +13,15 @@ contract SetReceiver is Script {
         vm.startBroadcast();
         zkMysticSender(_sender).setReceiver(_receiver);
         vm.stopBroadcast();
+        console2.log(
+            "\u26A1\ufe0f \u26A1\ufe0f \u26A1\ufe0f \u26A1\ufe0f \u26A1\ufe0f Receiver set \u26A1\ufe0f \u26A1\ufe0f \u26A1\ufe0f \u26A1\ufe0f"
+        );
     }
 
     function setReceiverUsingConfigs() public {
-        address receiverAddress = helperConfig.getZkMysticReceiverAddress();
-        address senderAddress = helperConfig.getZkMysticSenderAddress();
+        uint256 GOERLI_CHAIN_ID = 5;
+        address receiverAddress = helperConfig.getZkMysticReceiverAddress(GOERLI_CHAIN_ID);
+        address senderAddress = helperConfig.getZkMysticSenderAddress(block.chainid);
         setReceiver(receiverAddress, senderAddress);
     }
 
@@ -27,22 +31,29 @@ contract SetReceiver is Script {
 }
 
 contract CheckStatusForERC20 is Script {
-    HelperConfig public helperConfig = new HelperConfig();
-
-    function checkStatusForERC20(address _sender, address _asset, bool _forceUpdateGlobalExitRoot) public {
+    function checkStatusForERC20(
+        address _sender,
+        uint32 _destinationId,
+        address _asset,
+        bool _forceUpdateGlobalExitRoot,
+        uint256 _gasAmount
+    ) public {
         vm.startBroadcast();
-        zkMysticSender(_sender).checkStatusForERC20(_asset, _forceUpdateGlobalExitRoot);
+        zkMysticSender(_sender).checkStatusForERC20{value: _gasAmount}(
+            _asset, _destinationId, _forceUpdateGlobalExitRoot
+        );
         vm.stopBroadcast();
     }
 
     function checkStatusForERC20UsingConfigs() public {
-        address senderAddress = helperConfig.getZkMysticSenderAddress();
-        address assetAddress = helperConfig.ERC20_ADDRESS();
-        console.log("senderAddress: %s", senderAddress);
-        console.log("assetAddress: %s", assetAddress);
+        HelperConfig helperConfig = new HelperConfig();
+        (address erc20Address,,,) = helperConfig.networkConfig();
+        uint32 destinationId = uint32(helperConfig.GOERLI_CHAIN_ID());
+        address senderAddress = helperConfig.getZkMysticSenderAddress(block.chainid);
         bool forceUpdateGlobalExitRoot = true;
+        uint256 gasAmount = 8e16;
 
-        checkStatusForERC20(senderAddress, assetAddress, forceUpdateGlobalExitRoot);
+        checkStatusForERC20(senderAddress, destinationId, erc20Address, forceUpdateGlobalExitRoot, gasAmount);
     }
 
     function run() external {
@@ -51,20 +62,22 @@ contract CheckStatusForERC20 is Script {
 }
 
 contract CheckStatusForERC721 is Script {
-    HelperConfig public helperConfig = new HelperConfig();
-
-    function checkStatus(address _sender, address _asset, bool _forceUpdateGlobalExitRoot) public {
+    function checkStatus(address _sender, uint32 _destinationId, address _asset, bool _forceUpdateGlobalExitRoot)
+        public
+    {
         vm.startBroadcast();
-        zkMysticSender(_sender).checkStatusForERC721(_asset, _forceUpdateGlobalExitRoot);
+        zkMysticSender(_sender).checkStatusForERC721(_asset, _destinationId, _forceUpdateGlobalExitRoot);
         vm.stopBroadcast();
     }
 
     function checkStatusForERC721UsingConfigs() public {
-        address senderAddress = helperConfig.getZkMysticSenderAddress();
-        address assetAddress = helperConfig.ERC721_ADDRESS();
+        HelperConfig helperConfig = new HelperConfig();
+        (address erc721Address,,,) = helperConfig.networkConfig();
+        address senderAddress = helperConfig.getZkMysticSenderAddress(block.chainid);
+        uint32 destinationId = uint32(block.chainid);
         bool forceUpdateGlobalExitRoot = true;
 
-        checkStatus(senderAddress, assetAddress, forceUpdateGlobalExitRoot);
+        checkStatus(senderAddress, destinationId, erc721Address, forceUpdateGlobalExitRoot);
     }
 
     function run() external {

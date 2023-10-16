@@ -7,22 +7,33 @@ import {zkMysticReceiver} from "../src/zkMysticReceiver.sol";
 import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployzkMysticReceiver is Script {
-    HelperConfig public helperConfig = new HelperConfig();
-
-    function deployMysticReceiver(address _bridgeAddress, address _senderAddress) public returns (address) {
+    function deployMysticReceiver(
+        address _bridgeAddress,
+        address _senderAddress,
+        address _mailbox,
+        address _gasPaymaster
+    ) public returns (address) {
         vm.startBroadcast();
-        zkMysticReceiver receiver = new zkMysticReceiver(_bridgeAddress, _senderAddress);
+        zkMysticReceiver receiver = new zkMysticReceiver(_bridgeAddress, _senderAddress, _mailbox, _gasPaymaster);
+        (bool success,) = address(receiver).call{value: 1e16}("");
+        if (success) {
+            console.log("zkMysticReceiver funded");
+        }
         vm.stopBroadcast();
 
-        console.log("zkMysticReceiver deployed at address: %s", address(receiver));
+        console.log("zkMysticReceiver deployed on chainid %s at address: %s", block.chainid, address(receiver));
         return address(receiver);
     }
 
     function deployUsingConfigs() public returns (address) {
-        address senderAddress = helperConfig.getZkMysticSenderAddress();
-        address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
+        HelperConfig helperConfig = new HelperConfig();
 
-        return deployMysticReceiver(bridgeAddress, senderAddress);
+        (,, address mailbox, address gasPaymaster) = helperConfig.networkConfig();
+        address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
+        uint256 chainId = helperConfig.MUMBAI_CHAIN_ID();
+        address senderAddress = helperConfig.getZkMysticSenderAddress(chainId);
+
+        return deployMysticReceiver(bridgeAddress, senderAddress, mailbox, gasPaymaster);
     }
 
     function run() public returns (address receiverAddress) {

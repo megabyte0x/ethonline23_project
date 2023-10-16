@@ -10,6 +10,8 @@ contract DeployzkMysticNFT is Script {
         vm.startBroadcast();
         zkMysticNFT nft = new zkMysticNFT();
         vm.stopBroadcast();
+
+        console.log("zkMysticNFT on chainid %s deployed at address: %s", block.chainid, address(nft));
         return address(nft);
     }
 
