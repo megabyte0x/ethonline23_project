@@ -101,10 +101,12 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
         (address userAddress, address assetAddress, uint8 assetType) = abi.decode(data, (address, address, uint8));
 
         emit ZkMystics__RequestReceived(userAddress, assetAddress, _origin);
-        sendResposeToSender(userAddress, assetAddress, assetType);
+        sendResposeToSender(userAddress, assetAddress, assetType, _origin);
     }
 
-    function sendResposeToSender(address _userAddress, address _assetAddress, uint8 _assetType) internal {
+    function sendResposeToSender(address _userAddress, address _assetAddress, uint8 _assetType, uint32 _destinationId)
+        internal
+    {
         bool result;
         uint256 balance;
         bytes memory messageData;
@@ -124,15 +126,11 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
 
         messageData = abi.encode(_userAddress, result);
 
-        bytes32 messageId = IMailbox(i_mailbox).dispatch(
-            ZKEVM_DESTINATION_NETWORK_ID_FOR_HYPERLANE, addressToBytes32(i_zkMysticsSenderAddress), messageData
-        );
-        uint256 quote =
-            IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(ZKEVM_DESTINATION_NETWORK_ID_FOR_HYPERLANE, 1500000);
+        bytes32 messageId =
+            IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(i_zkMysticsSenderAddress), messageData);
+        uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
         if (msg.value < quote) revert zkMysticReceiver__InsufficientAmountForInterchainGasPayment(msg.value, quote);
-        IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
-            messageId, ZKEVM_DESTINATION_NETWORK_ID_FOR_HYPERLANE, 1500000, msg.sender
-        );
+        IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(messageId, _destinationId, 1500000, msg.sender);
     }
 
     // converts address to bytes32
