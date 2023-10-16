@@ -77,7 +77,7 @@ deployReceiverOnGoerli:
 setReceiverOnzkEVM:
 	@forge script script/Interaction.s.sol:SetReceiver --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
 
-setUpOnChain:
+setUpOnChainForZKEVM:
 	make deployNFTOnzkEVM && make deploySenderOnzkEVM && make deployReceiverOnGoerli && make setReceiverOnzkEVM
 
 checkStatusForERC20OnzkEVM:
@@ -86,3 +86,22 @@ checkStatusForERC721OnzkEVM:
 	@forge script script/Interaction.s.sol:CheckStatusForERC721 --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast -vvvvv
 
 
+deployNFTOnGoerli:
+	@forge script script/DeployzkMysticNFT.s.sol:DeployzkMysticNFT --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY)
+
+deploySenderOnGoerli:
+	@forge script script/DeployzkMysticSender.s.sol:DeployzkMysticSender --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY)
+
+deployReceiverOnzkEVM:
+	@forge script script/DeployzkMysticReceiver.s.sol:DeployzkMysticReceiver --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY)
+
+setReceiverOnGoerli:
+	@forge script script/Interaction.s.sol:SetReceiver --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
+
+setUpOnChainForGoerli:
+	make deployNFTOnGoerli && make deploySenderOnGoerli && make deployReceiverOnzkEVM && make setReceiverOnGoerli
+
+checkStatusForERC20OnGoerli:
+	@forge script script/Interaction.s.sol:CheckStatusForERC20 --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
+checkStatusForERC721OnGoerli:
+	@forge script script/Interaction.s.sol:CheckStatusForERC721 --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast -vvvvv
