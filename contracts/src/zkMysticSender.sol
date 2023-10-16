@@ -34,6 +34,8 @@ contract zkMysticSender is IBridgeMessageReceiver {
     error ZkMystics__InvalidZkMyticsReceiverAddress();
     error ZkMystics__ZeroAddress();
 
+    event ZkMystics__NFTMinted(address indexed userAddress);
+    event ZkMystics__StatusFailed(address indexed userAddress);
     event ZkMystics__CheckStatusRequestCreated(address indexed userAddress, address indexed assetAddress);
     event ZkMystics__StatusChecked(
         address indexed userAddress, address indexed assetAddress, uint8 assetType, bool indexed result
@@ -104,7 +106,10 @@ contract zkMysticSender is IBridgeMessageReceiver {
         (address userAddress, bool result) = abi.decode(data, (address, bool));
 
         if (result) {
+            emit ZkMystics__NFTMinted(userAddress);
             zkMysticNFT(i_zkMysticsNFTAddress).mintNFT(userAddress);
+        } else {
+            emit ZkMystics__StatusFailed(userAddress);
         }
     }
 }
