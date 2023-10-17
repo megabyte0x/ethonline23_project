@@ -49,6 +49,10 @@ ifeq ($(findstring --network zkevm,$(ARGS)),--network zkevm)
 	NETWORK_ARGS := --rpc-url $(POLYGON_ZKEVM_TESTNET_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_ZKEVM_SCAN_API_KEY)
 endif
 
+ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
+	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY)
+endif
+
 # Commands for Local
 
 deployNFT:
@@ -113,3 +117,8 @@ checkStatusForERC20OnGoerli:
 	@forge script script/Interaction.s.sol:CheckStatusForERC20 --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast
 checkStatusForERC721OnGoerli:
 	@forge script script/Interaction.s.sol:CheckStatusForERC721 --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast -vvvvv
+
+
+
+newSetUp:
+	make deployNFT ARGS="--network sepolia" && make deploySender ARGS="--network sepolia" && make deployReceiver ARGS="--network goerli" && make setReceiver ARGS="--network sepolia" && make checkStatusForERC20 ARGS="--network sepolia"

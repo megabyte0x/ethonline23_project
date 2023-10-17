@@ -30,6 +30,8 @@ import {IPolygonZkEVMBridge} from "./polygonZKEVMContracts/interfaces/IPolygonZk
 import {zkMysticNFT} from "./zkMysticNFT.sol";
 import {IInterchainGasPaymaster} from "@hyperlane-xyz/core/contracts/interfaces/IInterchainGasPaymaster.sol";
 import {IMailbox} from "@hyperlane-xyz/core/contracts/interfaces/IMailbox.sol";
+import {IInterchainQueryRouter} from "@hyperlane-xyz/core/contracts/interfaces/middleware/IInterchainQueryRouter.sol";
+import {zkMysticReceiver} from "./zkMysticReceiver.sol";
 
 /**
  * @title zkMysticSender
@@ -51,6 +53,11 @@ contract zkMysticSender is IBridgeMessageReceiver {
         address indexed userAddress, address indexed assetAddress, uint8 assetType, bool indexed result
     );
 
+    struct Call {
+        address to;
+        bytes data;
+    }
+
     uint32 public constant GOERLI_DESTINATION_NETWORK_ID = 0;
     uint256 public constant GOERLI_CHAIN_ID = 5;
     uint256 public constant POLYGON_ZKEVM_TESTNET_CHAIN_ID = 1442;
@@ -59,18 +66,31 @@ contract zkMysticSender is IBridgeMessageReceiver {
     address public immutable i_zkMysticsNFTAddress;
     address public immutable i_mailbox;
     address public immutable i_gasPaymaster;
+    address public immutable i_iqsRouter;
 
     address public s_zkMysticsReceiverAddress;
 
-    constructor(address _polygonZkEVMBridge, address _zkMysticNFT, address _mailbox, address _gasPaymaster) {
+    constructor(
+        address _polygonZkEVMBridge,
+        address _zkMysticNFT,
+        address _mailbox,
+        address _gasPaymaster,
+        address _iqsRouter
+    ) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
         i_zkMysticsNFTAddress = _zkMysticNFT;
         i_mailbox = _mailbox;
         i_gasPaymaster = _gasPaymaster;
+        i_iqsRouter = _iqsRouter;
     }
 
     modifier isZeroAddress(address _address) {
         if (_address == address(0)) revert ZkMystics__ZeroAddress();
+        _;
+    }
+
+    modifier onlyCallback() {
+        require(msg.sender == i_iqsRouter);
         _;
     }
 
@@ -124,8 +144,20 @@ contract zkMysticSender is IBridgeMessageReceiver {
                 GOERLI_DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
             );
         } else {
-            bytes32 messageId =
-                IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(s_zkMysticsReceiverAddress), messageData);
+            // bytes32 messageId =
+            //     IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(s_zkMysticsReceiverAddress), messageData);
+
+            Call memory _balanceCall = Call({
+                to: s_zkMysticsReceiverAddress,
+                data: abi.encodeCall(zkMysticReceiver.holdAsset, (_assetAddress, msg.sender, assetType))
+            });
+
+            bytes memory _callback = abi.encodePacked(this.mintNFT.selector, msg.sender);
+
+            bytes32 messageId = IInterchainQueryRouter(i_iqsRouter).query(
+                _destinationId, s_zkMysticsReceiverAddress, abi.encode(_balanceCall), _callback
+            );
+
             uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
             IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
                 messageId, _destinationId, 1500000, msg.sender
@@ -160,6 +192,10 @@ contract zkMysticSender is IBridgeMessageReceiver {
         } else {
             emit ZkMystics__StatusFailed(userAddress);
         }
+    }
+
+    function mintNFT(address _user) public onlyCallback {
+        zkMysticNFT(i_zkMysticsNFTAddress).mintNFT(_user);
     }
 
     // converts address to bytes32

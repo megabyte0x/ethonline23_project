@@ -107,20 +107,9 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
     function sendResposeToSender(address _userAddress, address _assetAddress, uint8 _assetType, uint32 _destinationId)
         internal
     {
-        bool result;
-        uint256 balance;
         bytes memory messageData;
 
-        if (_assetType == 1) {
-            balance = IERC20(_assetAddress).balanceOf(_userAddress);
-        } else if (_assetType == 2) {
-            balance = IERC721(_assetAddress).balanceOf(_userAddress);
-        }
-        if (balance > 0) {
-            result = true;
-        } else {
-            result = false;
-        }
+        bool result = holdAsset(_assetAddress, _userAddress, _assetType);
 
         emit ZkMystics__StatusChecked(_userAddress, _assetAddress, _assetType, result);
 
@@ -138,6 +127,21 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
     // converts address to bytes32
     function addressToBytes32(address _addr) internal pure returns (bytes32) {
         return bytes32(uint256(uint160(_addr)));
+    }
+
+    function holdAsset(address _asset, address _user, uint8 _assetType) public returns (bool) {
+        uint256 balance;
+        if (_assetType == 1) {
+            balance = IERC20(_asset).balanceOf(_user);
+        } else if (_assetType == 2) {
+            balance = IERC721(_asset).balanceOf(_user);
+        }
+        if (balance > 0) {
+            userAddressToMintNFT[_user] = true;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     receive() external payable {}

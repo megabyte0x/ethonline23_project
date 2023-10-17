@@ -28,9 +28,9 @@ contract DeployzkMysticReceiver is Script {
     function deployUsingConfigs() public returns (address) {
         HelperConfig helperConfig = new HelperConfig();
 
-        (,, address mailbox, address gasPaymaster) = helperConfig.networkConfig();
+        (,, address mailbox, address gasPaymaster,) = helperConfig.networkConfig();
         address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
-        uint256 chainId = helperConfig.MUMBAI_CHAIN_ID();
+        uint256 chainId = helperConfig.SEPOLIA_CHAIN_ID();
         address senderAddress = helperConfig.getZkMysticSenderAddress(chainId);
 
         return deployMysticReceiver(bridgeAddress, senderAddress, mailbox, gasPaymaster);

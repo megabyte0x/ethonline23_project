@@ -47,7 +47,7 @@ contract CheckStatusForERC20 is Script {
 
     function checkStatusForERC20UsingConfigs() public {
         HelperConfig helperConfig = new HelperConfig();
-        (address erc20Address,,,) = helperConfig.networkConfig();
+        (address erc20Address,,,,) = helperConfig.networkConfig();
         uint32 destinationId = uint32(helperConfig.GOERLI_CHAIN_ID());
         address senderAddress = helperConfig.getZkMysticSenderAddress(block.chainid);
         bool forceUpdateGlobalExitRoot = true;
@@ -61,26 +61,26 @@ contract CheckStatusForERC20 is Script {
     }
 }
 
-contract CheckStatusForERC721 is Script {
-    function checkStatus(address _sender, uint32 _destinationId, address _asset, bool _forceUpdateGlobalExitRoot)
-        public
-    {
-        vm.startBroadcast();
-        zkMysticSender(_sender).checkStatusForERC721(_asset, _destinationId, _forceUpdateGlobalExitRoot);
-        vm.stopBroadcast();
-    }
+// contract CheckStatusForERC721 is Script {
+//     function checkStatus(address _sender, uint32 _destinationId, address _asset, bool _forceUpdateGlobalExitRoot)
+//         public
+//     {
+//         vm.startBroadcast();
+//         zkMysticSender(_sender).checkStatusForERC721(_asset, _destinationId, _forceUpdateGlobalExitRoot);
+//         vm.stopBroadcast();
+//     }
 
-    function checkStatusForERC721UsingConfigs() public {
-        HelperConfig helperConfig = new HelperConfig();
-        (address erc721Address,,,) = helperConfig.networkConfig();
-        address senderAddress = helperConfig.getZkMysticSenderAddress(block.chainid);
-        uint32 destinationId = uint32(block.chainid);
-        bool forceUpdateGlobalExitRoot = true;
+//     function checkStatusForERC721UsingConfigs() public {
+//         HelperConfig helperConfig = new HelperConfig();
+//         (address erc721Address,,,) = helperConfig.networkConfig();
+//         address senderAddress = helperConfig.getZkMysticSenderAddress(block.chainid);
+//         uint32 destinationId = uint32(block.chainid);
+//         bool forceUpdateGlobalExitRoot = true;
 
-        checkStatus(senderAddress, destinationId, erc721Address, forceUpdateGlobalExitRoot);
-    }
+//         checkStatus(senderAddress, destinationId, erc721Address, forceUpdateGlobalExitRoot);
+//     }
 
-    function run() external {
-        checkStatusForERC721UsingConfigs();
-    }
-}
+//     function run() external {
+//         checkStatusForERC721UsingConfigs();
+//     }
+// }
