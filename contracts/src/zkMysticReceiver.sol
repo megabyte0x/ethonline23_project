@@ -130,7 +130,9 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
             IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(i_zkMysticsSenderAddress), messageData);
         uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
         if (msg.value < quote) revert zkMysticReceiver__InsufficientAmountForInterchainGasPayment(msg.value, quote);
-        IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(messageId, _destinationId, 1500000, msg.sender);
+        IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
+            messageId, _destinationId, 1500000, _userAddress
+        );
     }
 
     // converts address to bytes32

@@ -126,9 +126,9 @@ contract zkMysticSender is IBridgeMessageReceiver {
         } else {
             bytes32 messageId =
                 IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(s_zkMysticsReceiverAddress), messageData);
-            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 10000);
+            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
             IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
-                messageId, _destinationId, 10000, msg.sender
+                messageId, _destinationId, 1500000, msg.sender
             );
         }
 
