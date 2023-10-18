@@ -26,7 +26,8 @@ contract DeployzkMysticSender is Script {
         HelperConfig helperConfig = new HelperConfig();
 
         (,, address mailbox, address gasPaymaster, address iqsRouter) = helperConfig.networkConfig();
-        address nftAddress = helperConfig.getZkMysticNFTAddress(block.chainid);
+        // address nftAddress = helperConfig.getZkMysticNFTAddress(block.chainid);
+        address nftAddress = 0x07ab44c33cE8953a1dEA9398cc902E43fd111cd5;
         address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
 
         return deployMysticSender(bridgeAddress, nftAddress, mailbox, gasPaymaster, iqsRouter);

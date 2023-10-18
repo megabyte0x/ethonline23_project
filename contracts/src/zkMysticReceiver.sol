@@ -95,34 +95,40 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
         );
     }
 
-    function handle(uint32 _origin, bytes32 _sender, bytes memory data) external payable {
-        if (msg.sender != i_mailbox) revert ZkMystics__InvalidMailbox();
+    // /**
+    //  *
+    //  * @param _userAddress user address
+    //  * @param _assetAddress asset to check balance
+    //  * @param _assetType erc20 or erc721
+    //  * @param _destinationId destination domain id
+    //  */
+    // function handle(uint32 _origin, bytes32 _sender, bytes memory data) external payable {
+    //     if (msg.sender != i_mailbox) revert ZkMystics__InvalidMailbox();
 
-        (address userAddress, address assetAddress, uint8 assetType) = abi.decode(data, (address, address, uint8));
+    //     (address userAddress, address assetAddress, uint8 assetType) = abi.decode(data, (address, address, uint8));
 
-        emit ZkMystics__RequestReceived(userAddress, assetAddress, _origin);
-        sendResposeToSender(userAddress, assetAddress, assetType, _origin);
-    }
+    //     emit ZkMystics__RequestReceived(userAddress, assetAddress, _origin);
+    // }
 
-    function sendResposeToSender(address _userAddress, address _assetAddress, uint8 _assetType, uint32 _destinationId)
-        internal
-    {
-        bytes memory messageData;
+    // function sendResposeToSender(address _userAddress, address _assetAddress, uint8 _assetType, uint32 _destinationId)
+    //     internal
+    // {
+    //     bytes memory messageData;
 
-        bool result = holdAsset(_assetAddress, _userAddress, _assetType);
+    //     bool result = holdAsset(_assetAddress, _userAddress, _assetType);
 
-        emit ZkMystics__StatusChecked(_userAddress, _assetAddress, _assetType, result);
+    //     emit ZkMystics__StatusChecked(_userAddress, _assetAddress, _assetType, result);
 
-        messageData = abi.encode(_userAddress, result);
+    //     messageData = abi.encode(_userAddress, result);
 
-        bytes32 messageId =
-            IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(i_zkMysticsSenderAddress), messageData);
-        uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
-        if (msg.value < quote) revert zkMysticReceiver__InsufficientAmountForInterchainGasPayment(msg.value, quote);
-        IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
-            messageId, _destinationId, 1500000, _userAddress
-        );
-    }
+    //     bytes32 messageId =
+    //         IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(i_zkMysticsSenderAddress), messageData);
+    //     uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
+    //     if (msg.value < quote) revert zkMysticReceiver__InsufficientAmountForInterchainGasPayment(msg.value, quote);
+    //     IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
+    //         messageId, _destinationId, 1500000, _userAddress
+    //     );
+    // }
 
     // converts address to bytes32
     function addressToBytes32(address _addr) internal pure returns (bytes32) {

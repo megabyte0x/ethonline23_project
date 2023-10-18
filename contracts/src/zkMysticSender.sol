@@ -122,21 +122,21 @@ contract zkMysticSender is IBridgeMessageReceiver {
                 GOERLI_DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
             );
         } else {
-            Call memory _balanceCall = Call({
-                to: s_zkMysticsReceiverAddress,
-                data: abi.encodeCall(zkMysticReceiver.holdAsset, (_assetAddress, msg.sender, assetType))
-            });
+            // Call memory _balanceCall = Call({
+            //     to: s_zkMysticsReceiverAddress,
+            //     data: abi.encodeCall(zkMysticReceiver.holdAsset, (_assetAddress, msg.sender, assetType))
+            // });
 
-            bytes memory _callback = abi.encodePacked(this.mintZkMysticNFT.selector, msg.sender);
+            // bytes memory _callback = abi.encodePacked(this.mintZkMysticNFT.selector, msg.sender);
 
-            bytes32 messageId = IInterchainQueryRouter(i_iqsRouter).query(
-                _destinationId, s_zkMysticsReceiverAddress, abi.encode(_balanceCall), _callback
-            );
+            // bytes32 messageId = IInterchainQueryRouter(i_iqsRouter).query(
+            //     _destinationId, s_zkMysticsReceiverAddress, abi.encode(_balanceCall), _callback
+            // );
 
-            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, (100000));
-            IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
-                messageId, _destinationId, 100000, msg.sender
-            );
+            // uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, (100000));
+            // IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
+            //     messageId, _destinationId, 100000, msg.sender
+            // );
         }
         emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
     }
@@ -165,21 +165,21 @@ contract zkMysticSender is IBridgeMessageReceiver {
                 GOERLI_DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
             );
         } else {
-            Call memory _balanceCall = Call({
-                to: s_zkMysticsReceiverAddress,
-                data: abi.encodeCall(zkMysticReceiver.holdAsset, (_assetAddress, msg.sender, assetType))
-            });
+            // Call memory _balanceCall = Call({
+            //     to: s_zkMysticsReceiverAddress,
+            //     data: abi.encodeCall(zkMysticReceiver.holdAsset, (_assetAddress, msg.sender, assetType))
+            // });
 
-            bytes memory _callback = abi.encodePacked(this.mintZkMysticNFT.selector, msg.sender);
+            // bytes memory _callback = abi.encodePacked(this.mintZkMysticNFT.selector, msg.sender);
 
-            bytes32 messageId = IInterchainQueryRouter(i_iqsRouter).query(
-                _destinationId, s_zkMysticsReceiverAddress, abi.encode(_balanceCall), _callback
-            );
+            // bytes32 messageId = IInterchainQueryRouter(i_iqsRouter).query(
+            //     _destinationId, s_zkMysticsReceiverAddress, abi.encode(_balanceCall), _callback
+            // );
 
-            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
-            IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
-                messageId, _destinationId, 1500000, msg.sender
-            );
+            // uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
+            // IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
+            //     messageId, _destinationId, 1500000, msg.sender
+            // );
         }
 
         emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
