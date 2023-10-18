@@ -19,6 +19,7 @@ contract HelperConfig is Script {
     uint256 public constant MUMBAI_CHAIN_ID = 80001;
     uint256 public constant GAS_PAYMENT = 1e16;
     uint256 public constant SEPOLIA_CHAIN_ID = 11155111;
+    uint256 public constant FUJI_CHAIN_ID = 43113;
 
     NetworkConfig public networkConfig;
 
@@ -31,6 +32,8 @@ contract HelperConfig is Script {
             networkConfig = getMumbaiNetworkConfig();
         } else if (block.chainid == SEPOLIA_CHAIN_ID) {
             networkConfig = getSepoliaNetworkConfig();
+        } else if (block.chainid == FUJI_CHAIN_ID) {
+            networkConfig = getFujiNetworkConfig();
         } else {
             revert("Invalid chain id");
         }
@@ -73,6 +76,16 @@ contract HelperConfig is Script {
             mailbox: 0xCC737a94FecaeC165AbCf12dED095BB13F037685,
             gasPaymaster: 0xF987d7edcb5890cB321437d8145E3D51131298b6,
             iqsRouter: 0x507C18fa4e3b0ce6beBD494488D62d1ed0fB0555
+        });
+    }
+
+    function getFujiNetworkConfig() public pure returns (NetworkConfig memory) {
+        return NetworkConfig({
+            erc20Address: 0x23d0Ece5b3567A8735BBA4388859f4B8152390A9,
+            erc721Address: 0x158fe303274322204E5233c971CB676d768Db782,
+            mailbox: 0xCC737a94FecaeC165AbCf12dED095BB13F037685,
+            gasPaymaster: 0xF90cB82a76492614D07B82a7658917f3aC811Ac1,
+            iqsRouter: 0x7192d5Ad540E9fEfc3FD1845d41c18EE86980AAb
         });
     }
 

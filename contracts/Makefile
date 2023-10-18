@@ -53,6 +53,10 @@ ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
 	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY)
 endif
 
+ifeq ($(findstring --network fuji,$(ARGS)),--network fuji)
+	NETWORK_ARGS := --rpc-url $(FUJI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(SNOWTRACE_API_KEY)
+endif
+
 # Commands for Local
 
 deployNFT:
@@ -121,4 +125,4 @@ checkStatusForERC721OnGoerli:
 
 
 newSetUp:
-	make deployNFT ARGS="--network sepolia" && make deploySender ARGS="--network sepolia" && make deployReceiver ARGS="--network goerli" && make setReceiver ARGS="--network sepolia" && make checkStatusForERC20 ARGS="--network sepolia"
+	make deployNFT ARGS="--network mumbai" && make deploySender ARGS="--network mumbai" && make deployReceiver ARGS="--network goerli" && make setReceiver ARGS="--network mumbai" && make checkStatusForERC20 ARGS="--network mumbai"
