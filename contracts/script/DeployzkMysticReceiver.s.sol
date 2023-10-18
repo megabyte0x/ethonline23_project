@@ -15,7 +15,7 @@ contract DeployzkMysticReceiver is Script {
     ) public returns (address) {
         vm.startBroadcast();
         zkMysticReceiver receiver = new zkMysticReceiver(_bridgeAddress, _senderAddress, _mailbox, _gasPaymaster);
-        (bool success,) = address(receiver).call{value: 1e16}("");
+        (bool success,) = address(receiver).call{value: 1e10}("");
         if (success) {
             console.log("zkMysticReceiver funded");
         }
