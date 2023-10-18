@@ -98,6 +98,13 @@ contract zkMysticSender is IBridgeMessageReceiver {
         s_zkMysticsReceiverAddress = _receiverAddress;
     }
 
+    /**
+     *
+     * @param _assetAddress Asset address to check it's holding status
+     * @param _destinationId Destination chain id as per the Hyperlane Docs (For Polygon LXLY bridge,  it's always 0)
+     * @param _forceUpdateGlobalExitRoot whether to force update the global exit root or not on LXLY bridge
+     * @notice This function is using the Hyperlane Query API and LxLY bridge currently.
+     */
     function checkStatusForERC20(address _assetAddress, uint32 _destinationId, bool _forceUpdateGlobalExitRoot)
         external
         payable
@@ -115,17 +122,31 @@ contract zkMysticSender is IBridgeMessageReceiver {
                 GOERLI_DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
             );
         } else {
-            bytes32 messageId =
-                IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(s_zkMysticsReceiverAddress), messageData);
-            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, 1500000);
-            if (msg.value < quote) revert zkMysticSender__InsufficientAmountForInterchainGasPayment(msg.value, quote);
+            Call memory _balanceCall = Call({
+                to: s_zkMysticsReceiverAddress,
+                data: abi.encodeCall(zkMysticReceiver.holdAsset, (_assetAddress, msg.sender, assetType))
+            });
+
+            bytes memory _callback = abi.encodePacked(this.mintZkMysticNFT.selector, msg.sender);
+
+            bytes32 messageId = IInterchainQueryRouter(i_iqsRouter).query(
+                _destinationId, s_zkMysticsReceiverAddress, abi.encode(_balanceCall), _callback
+            );
+
+            uint256 quote = IInterchainGasPaymaster(i_gasPaymaster).quoteGasPayment(_destinationId, (100000));
             IInterchainGasPaymaster(i_gasPaymaster).payForGas{value: quote}(
-                messageId, _destinationId, 1500000, msg.sender
+                messageId, _destinationId, 100000, msg.sender
             );
         }
         emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
     }
 
+    /**
+     *
+     * @param _assetAddress Asset address to check it's holding status
+     * @param _destinationId Destination chain id as per the Hyperlane Docs (For Polygon LXLY bridge,  it's always 0)
+     * @param _forceUpdateGlobalExitRoot whether to force update the global exit root or not on LXLY bridge
+     */
     function checkStatusForERC721(address _assetAddress, uint32 _destinationId, bool _forceUpdateGlobalExitRoot)
         external
         payable
@@ -144,15 +165,12 @@ contract zkMysticSender is IBridgeMessageReceiver {
                 GOERLI_DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
             );
         } else {
-            // bytes32 messageId =
-            //     IMailbox(i_mailbox).dispatch(_destinationId, addressToBytes32(s_zkMysticsReceiverAddress), messageData);
-
             Call memory _balanceCall = Call({
                 to: s_zkMysticsReceiverAddress,
                 data: abi.encodeCall(zkMysticReceiver.holdAsset, (_assetAddress, msg.sender, assetType))
             });
 
-            bytes memory _callback = abi.encodePacked(this.mintNFT.selector, msg.sender);
+            bytes memory _callback = abi.encodePacked(this.mintZkMysticNFT.selector, msg.sender);
 
             bytes32 messageId = IInterchainQueryRouter(i_iqsRouter).query(
                 _destinationId, s_zkMysticsReceiverAddress, abi.encode(_balanceCall), _callback
@@ -181,25 +199,42 @@ contract zkMysticSender is IBridgeMessageReceiver {
         }
     }
 
-    function handle(uint32 _origin, bytes32 _sender, bytes memory data) external {
-        if (msg.sender != i_mailbox) revert ZkMystics__InvalidMailbox();
+    /**
+     *
+     * @param _origin Origin network id
+     * @param _sender Original sender
+     * @param data Encodede data from the main chain.
+     * @notice this is to called when usign Hyperlane Message API as the way to communicate.
+     */
+    // function handle(uint32 _origin, bytes32 _sender, bytes memory data) external {
+    //     if (msg.sender != i_mailbox) revert ZkMystics__InvalidMailbox();
 
-        (address userAddress, bool result) = abi.decode(data, (address, bool));
+    //     (bool result) = abi.decode(data, (bool));
+    //     address userAddress = bytes32ToAddress(_sender);
+    //     if (result) {
+    //         emit ZkMystics__NFTMinted(userAddress);
+    //         mintZkMysticNFT(userAddress);
+    //     } else {
+    //         emit ZkMystics__StatusFailed(userAddress);
+    //     }
+    // }
 
-        if (result) {
-            emit ZkMystics__NFTMinted(userAddress);
-            zkMysticNFT(i_zkMysticsNFTAddress).mintNFT(userAddress);
-        } else {
-            emit ZkMystics__StatusFailed(userAddress);
-        }
-    }
+    /**
+     *
+     * @param _user User address to mint the NFT
+     */
+    function mintZkMysticNFT(address _user) public {
+        emit ZkMystics__NFTMinted(_user);
 
-    function mintNFT(address _user) public onlyCallback {
         zkMysticNFT(i_zkMysticsNFTAddress).mintNFT(_user);
     }
 
     // converts address to bytes32
     function addressToBytes32(address _addr) internal pure returns (bytes32) {
         return bytes32(uint256(uint160(_addr)));
+    }
+
+    function bytes32ToAddress(bytes32 _buf) internal pure returns (address) {
+        return address(uint160(uint256(_buf)));
     }
 }

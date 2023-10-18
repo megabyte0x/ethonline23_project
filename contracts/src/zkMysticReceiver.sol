@@ -136,10 +136,15 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
         } else if (_assetType == 2) {
             balance = IERC721(_asset).balanceOf(_user);
         }
+
         if (balance > 0) {
             userAddressToMintNFT[_user] = true;
+            emit ZkMystics__StatusChecked(_user, _asset, _assetType, true);
+
             return true;
         } else {
+            emit ZkMystics__StatusChecked(_user, _asset, _assetType, false);
+
             return false;
         }
     }
