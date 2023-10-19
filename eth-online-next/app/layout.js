@@ -1,5 +1,6 @@
-import "./globals.css";
-import { Inter } from "next/font/google";
+import { AccountAbstractionProvider } from '@/Context/accountAbstractionContext'
+import './globals.css'
+import { Inter } from 'next/font/google'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,7 +12,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-[#e3e3e3] p-12`}>{children}</body>
+      <body className={inter.className}>
+        <AccountAbstractionProvider>
+          {children}
+        </AccountAbstractionProvider>
+      </body>
     </html>
   );
 }
