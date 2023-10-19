@@ -9,9 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@safe-global/account-abstraction-kit-poc": "^1.3.0",
+    "@safe-global/auth-kit": "^1.2.1",
+    "@safe-global/protocol-kit": "^1.3.0",
+    "@safe-global/relay-kit": "^1.3.0",
+    "@safe-global/safe-core-sdk-types": "^2.3.0",
+    "@web3auth/base": "^4.3.0",
+    "@web3auth/modal": "^4.3.1",
+    "@web3auth/openlogin-adapter": "^4.3.0",
+    "ethers": "^5.7.2",
+    "next": "^13.5.6-canary.2",
     "react": "^18",
-    "react-dom": "^18",
-    "next": "13.5.4"
+    "react-dom": "^18"
   },
   "devDependencies": {
     "autoprefixer": "^10",
