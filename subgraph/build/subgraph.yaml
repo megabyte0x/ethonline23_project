@@ -1,0 +1,28 @@
+specVersion: 0.0.5
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum
+    name: zkMysticReceiver
+    network: goerli
+    source:
+      address: "0x787EBF7861186BF46eC7e4635dfD9786e3B137C5"
+      abi: zkMysticReceiver
+      startBlock: 0
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ZkMystics__CheckStatusRequestCreated
+        - ZkMystics__StatusChecked
+      abis:
+        - name: zkMysticReceiver
+          file: zkMysticReceiver/abis/zkMysticReceiver.json
+      eventHandlers:
+        - event: ZkMystics__CheckStatusRequestCreated(indexed address,indexed address,indexed
+            uint32)
+          handler: handleZkMystics__CheckStatusRequestCreated
+        - event: ZkMystics__StatusChecked(indexed address,indexed address,uint8,indexed bool)
+          handler: handleZkMystics__StatusChecked
+      file: zkMysticReceiver/zkMysticReceiver.wasm
