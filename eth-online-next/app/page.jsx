@@ -37,7 +37,7 @@ export default function Home() {
         )}
         {!walletAdd && <ConnectWallet walletAdd={walletAdd} />}
       </main>
-      <MintModal />
+      {/* <MintModal /> */}
     </>
   );
 }
@@ -46,7 +46,7 @@ const walletAdd = "0x27923CAB90564c5C195BbFb98f7DA8d3D4F751Fb";
 // const walletAdd = "";
 
 const apeCoin = {
-  stat: true,
+  stat: false,
   claimList: [
     {
       hash: "0x27923CAB90564c5C19",
