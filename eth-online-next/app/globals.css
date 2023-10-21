@@ -6,12 +6,20 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  transition: all 1s;
+  transition: all 0.6s;
 }
 
 .Bg {
   background: url(../assets/bgEth.png) fixed no-repeat;
   background-size: 100vw 100vh;
+}
+
+.dropdown:hover .dropdown-content {
+  display: grid;
+}
+
+.lgLink:hover > :nth-child(2) {
+  transform: rotate(180deg);
 }
 
 /* .inSh {

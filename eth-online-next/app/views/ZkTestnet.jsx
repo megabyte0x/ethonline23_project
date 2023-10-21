@@ -3,13 +3,27 @@ import { BtnL1, ClaimHash, LowerHeading, NftDisplay } from "../components";
 
 const ZkTestnet = () => {
   return (
-    <div>
-      <LowerHeading text="Polygon ZK EVM Testnet" />
-      <BtnL1 />
-      <ClaimHash />
-      <NftDisplay />
+    <div className="grid px-16 grid-flow-col gap-6">
+      <div className="self-center place-self-center grid grid-flow-row gap-6">
+        <LowerHeading text="Polygon ZK EVM Testnet" />
+        <BtnL1 text="zkevm" />
+      </div>
+      <ClaimHash hash={claimH.hash} stat={claimH.stat} />
+      <div className="blur-sm">
+        <NftDisplay text={nft.text} imag={nft.imag} />
+      </div>
     </div>
   );
 };
 
 export default ZkTestnet;
+
+const claimH = {
+  hash: "0xw2e13b1924riqcy34it4",
+  stat: false,
+};
+
+const nft = {
+  text: "NFT Name",
+  imag: "",
+};

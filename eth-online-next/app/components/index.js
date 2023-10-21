@@ -7,7 +7,9 @@ import ClaimHash from "./ClaimHash";
 import DropDown from "./DropDown";
 import ConWallet from "./ConWallet";
 import ClaimRow from "./ClaimRow";
+import RowClaim from "./RowClaim";
 export {
+  RowClaim,
   NavBar,
   LowerHeading,
   NftDisplay,
@@ -16,5 +18,5 @@ export {
   ClaimHash,
   DropDown,
   ConWallet,
-  ClaimRow
+  ClaimRow,
 };

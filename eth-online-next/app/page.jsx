@@ -29,8 +29,8 @@ export default function Home() {
     <>
       <main className="">
         {!isAuthenticated && <MeetTeam />}
-        {isAuthenticated && chain == "0x13881" && <MumbaiTestnet />}
-        {isAuthenticated && chain == "0x13882" && <ZkTestnet />}
+        {isAuthenticated && chainId == "0x13881" && <MumbaiTestnet />}
+        {isAuthenticated && chainId == "0x5a2" && <ZkTestnet />}
         {/* <AboutUs />
         {isAuthenticated && (
           <div className="grid grid-cols-3 gap-6">
