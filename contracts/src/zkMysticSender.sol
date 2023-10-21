@@ -40,12 +40,13 @@ contract zkMysticSender {
     );
 
     IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
-    uint32 public constant DESTINATION_NETWORK_ID = 0;
+    uint32 public immutable i_destinationId;
 
     address public s_zkMysticsReceiverAddress;
 
-    constructor(address _polygonZkEVMBridge) {
+    constructor(address _polygonZkEVMBridge, uint32 _destinationId) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
+        i_destinationId = _destinationId;
     }
 
     modifier isZeroAddress(address _address) {
@@ -70,7 +71,7 @@ contract zkMysticSender {
         bytes memory messageData = abi.encode(msg.sender, _assetAddress, assetType);
 
         i_polygonZkEVMBridge.bridgeMessage(
-            DESTINATION_NETWORK_ID, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
+            i_destinationId, s_zkMysticsReceiverAddress, _forceUpdateGlobalExitRoot, messageData
         );
 
         emit ZkMystics__CheckStatusRequestCreated(msg.sender, _assetAddress);
