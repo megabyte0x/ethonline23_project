@@ -9,7 +9,12 @@
   transition: all 1s;
 }
 
-.inSh {
+.Bg {
+  background: url(../assets/bgEth.png) fixed no-repeat;
+  background-size: 100vw 100vh;
+}
+
+/* .inSh {
   box-shadow: 0px 0px 6px 6px rgba(0, 0, 0, 0.25) inset;
 }
 
@@ -19,4 +24,4 @@
 
 .outSh {
   box-shadow: -3px -3px 6px 6px rgba(0, 0, 0, 0.25) inset;
-}
+} */
