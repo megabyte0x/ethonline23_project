@@ -209,7 +209,7 @@ const AccountAbstractionProvider = ({children}) => {
         const transactions = [{
             to: contractAddress,
             data: etherInterface.encodeFunctionData("mintNFT", 
-         [ "0x1Cb30cb181D7854F91c2410BD037E6F42130e860"]),
+         [ ownerAddress]),
             // data:"0x",
             value: "0"
         }]
