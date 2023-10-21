@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter, Jura } from "next/font/google";
 import { NavBar } from "./components";
 import { AboutUs } from "./views";
+import { MintingProvider } from "@/Context/mintingContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,9 +23,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${jura.className} Bg text-white`}>
         <AccountAbstractionProvider>
-          <NavBar />
-          <AboutUs />
-          {children}
+          <MintingProvider>
+            <NavBar />
+            <AboutUs />
+            {children}
+          </MintingProvider>
         </AccountAbstractionProvider>
       </body>
     </html>

@@ -6,6 +6,7 @@ import BtnL2 from "./BtnL2";
 import ClaimHash from "./ClaimHash";
 import DropDown from "./DropDown";
 import ConWallet from "./ConWallet";
+import ClaimRow from "./ClaimRow";
 export {
   NavBar,
   LowerHeading,
@@ -15,4 +16,5 @@ export {
   ClaimHash,
   DropDown,
   ConWallet,
+  ClaimRow
 };
