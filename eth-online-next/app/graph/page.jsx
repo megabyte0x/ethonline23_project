@@ -35,7 +35,9 @@ const graphPage = () => {
   return (
     <>
     {claimList.length > 0 ? claimList.map((claim,index) => (
-        <ClaimRow/>
+        <ClaimRow 
+            ready_for_claim={claim.ready_for_claim}
+            claim_tx_hash={claim.claim_tx_hash}/>
     )) :(<h1> Fetching claim list.... </h1>)}
     </>
   );
