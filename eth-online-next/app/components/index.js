@@ -1,2 +1,3 @@
 import ClaimRow from "./ClaimRow";
-export { ClaimRow };
+import NavBar from "./NavBar";
+export { ClaimRow, NavBar };

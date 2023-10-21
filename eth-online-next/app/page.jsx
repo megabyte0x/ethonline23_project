@@ -1,19 +1,39 @@
+"use client";
+import { useAccountAbstraction } from "@/Context/accountAbstractionContext";
+
 import Image from "next/image";
 import {
   AboutUs,
   ClaimList,
   ConnectWallet,
+  MeetTeam,
   MintModal,
   Minted,
+  MumbaiTestnet,
   YourNFTs,
+  ZkTestnet,
 } from "./views";
 
 export default function Home() {
+  const {
+    loginWeb3Auth,
+    isAuthenticated,
+    balance,
+    chainId,
+    relayTransaction,
+    isRelayerLoading,
+    gelatoTaskId,
+    ownerAddress,
+  } = useAccountAbstraction();
+  console.log(isAuthenticated);
   return (
     <>
-      <main className="rounded-[33px] h-[100%] w-[100%] bg-[#ffffff] p-9 grid gap-6 bgSh">
-        <AboutUs />
-        {walletAdd && (
+      <main className="">
+        {!isAuthenticated && <MeetTeam />}
+        {isAuthenticated && chain == "0x13881" && <MumbaiTestnet />}
+        {isAuthenticated && chain == "0x13882" && <ZkTestnet />}
+        {/* <AboutUs />
+        {isAuthenticated && (
           <div className="grid grid-cols-3 gap-6">
             <div className="col-span-2 grid gap-6 h-fit">
               {apeCoin.stat && (
@@ -26,57 +46,19 @@ export default function Home() {
             </div>
 
             <div className="col-span-1 grid gap-6 h-fit">
-              <ConnectWallet
-                walletAdd={walletAdd}
-                ape={apeCoin.stat}
-                lens={lensNFT.stat}
-              />
+              <ConnectWallet ape={apeCoin.stat} lens={lensNFT.stat} />
               <Minted />
             </div>
           </div>
         )}
-        {!walletAdd && <ConnectWallet walletAdd={walletAdd} />}
+
+        {!isAuthenticated && <ConnectWallet />} */}
       </main>
       {/* <MintModal /> */}
     </>
   );
 }
 
-const walletAdd = "0x27923CAB90564c5C195BbFb98f7DA8d3D4F751Fb";
-// const walletAdd = "";
+// const walletAdd = "0x27923CAB90564c5C195BbFb98f7DA8d3D4F751Fb";
 
-const apeCoin = {
-  stat: false,
-  claimList: [
-    {
-      hash: "0x27923CAB90564c5C19",
-      claimStat: true,
-    },
-    {
-      hash: "0x27923CAB90564c5C19",
-      claimStat: false,
-    },
-    {
-      hash: "0x27923CAB90564c5C19",
-      claimStat: false,
-    },
-  ],
-};
-
-const lensNFT = {
-  stat: true,
-  claimList: [
-    {
-      hash: "0x27923CAB90564c5C19",
-      claimStat: true,
-    },
-    {
-      hash: "0x27923CAB90564c5C19",
-      claimStat: false,
-    },
-    {
-      hash: "0x27923CAB90564c5C19",
-      claimStat: false,
-    },
-  ],
-};
+const chain = "0x13881";
