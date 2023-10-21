@@ -50,6 +50,20 @@ export const polygonChain = {
     isMoneriumPaymentsEnabled: false
 }
 
+export const zkEvmMumbai = {
+    id: '0x5a2',
+    token: 'ETH',
+    shortName: 'ether',
+    label: 'ZkEvm',
+    rpcUrl: 'https://polygonzkevm-testnet.g.alchemy.com/v2/eZU8yvzhwDn4JJO2HV7vSBmUG3Uln5Rg',
+    blockExplorerUrl: 'https://testnet-zkevm.polygonscan.com/',
+    color: '#8248E5',
+    // transactionServiceUrl: 'https://safe-transaction-polygon.safe.global',
+    isStripePaymentsEnabled: false,
+    isMoneriumPaymentsEnabled: false,
+    faucetUrl: 'https://faucet.polygon.technology/'
+}
+
 export const mumbaiChain = {
     id: '0x13881',
     token: 'matic',
@@ -63,7 +77,7 @@ export const mumbaiChain = {
     faucetUrl: 'https://mumbaifaucet.com/'
 }
 
-const chains = [gnosisChain, goerliChain, mainnetChain, mumbaiChain, polygonChain]
+const chains = [gnosisChain, goerliChain, mainnetChain, mumbaiChain, polygonChain, zkEvmMumbai]
 
 export const initialChain = mumbaiChain
 

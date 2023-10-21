@@ -10,7 +10,8 @@ import { Web3AuthModalPack } from '@safe-global/auth-kit';
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
 import { GelatoRelayPack } from '@safe-global/relay-kit'
 import usePolling from '@/hooks/usePolling';
-import * as nftContract from '@/abis/zkNysticNFT.json'
+import * as posNftContract from '@/abis/pos_zkNysticNFT.json'
+import * as zkEvmNftContract from '@/abis/zkEvm_zkMysticNFT.json'
 import AccountAbstraction from '@safe-global/account-abstraction-kit-poc';
 
 // type accountAbstractionContextValue = {
@@ -56,6 +57,7 @@ const AccountAbstractionProvider = ({children}) => {
     const [chainId, setChainId] = useState(initialChain.id)    
 
     const [web3Provider, setWeb3Provider] = useState()
+    const [signer, setSigner] = useState()
 
     const isAuthenticated = !!ownerAddress && !!chainId
     const chain = getChain(chainId) || initialChain
@@ -64,6 +66,7 @@ const AccountAbstractionProvider = ({children}) => {
         setOwnerAddress('')
         setChainId(chain.id)
         setWeb3Provider(undefined)
+        setSigner(undefined)
     }, [chain])
 
     const [web3AuthModalPack, setWeb3AuthModalPack] = useState()
@@ -135,6 +138,8 @@ const AccountAbstractionProvider = ({children}) => {
             setChainId(chain.id)
             setOwnerAddress(eoa)
             setWeb3Provider(new ethers.providers.Web3Provider(provider))
+            setSigner(await provider.getSigner())
+
         } catch (error) {
         console.log('error: ', error)
         }
@@ -154,6 +159,7 @@ const AccountAbstractionProvider = ({children}) => {
         setChainId(chain.id)
         setWeb3Provider(undefined)
         setGelatoTaskId(undefined)
+        setSigner(undefined)
     }
 
     const fetchBalance = useCallback(async () => {
@@ -173,7 +179,6 @@ const AccountAbstractionProvider = ({children}) => {
         setIsRelayerLoading(false)
         setGelatoTaskId(undefined)
     }, [chainId])
-
     // relay-kit implementation using Gelato
     const relayTransaction = async () => {
         if (web3Provider) {
@@ -181,7 +186,8 @@ const AccountAbstractionProvider = ({children}) => {
 
         const signer = await web3Provider.getSigner()
         // "DgdrbSLi2cbRQl183fc9vGOaU2nWjTZ5eObObc2u9PM_"
-        const relayPack = new GelatoRelayPack()
+        // "ddcXzsrjsxUva1AkAwPu2jSxnPZ1bVUzYt2AT87p9xE_"
+        const relayPack = new GelatoRelayPack("DgdrbSLi2cbRQl183fc9vGOaU2nWjTZ5eObObc2u9PM_")
 
         const safeAccountAbstraction = new AccountAbstraction(signer)
 
@@ -194,14 +200,16 @@ const AccountAbstractionProvider = ({children}) => {
         // console.log("withdraw:",withdrawAmount, signer)
 
         const contractAddress = '0x07ab44c33cE8953a1dEA9398cc902E43fd111cd5'
-        const etherInterface = new ethers.utils.Interface(nftContract.abi);
+        const etherInterface = new ethers.utils.Interface(posNftContract.abi);
+        // const contractAddress = "0xB04081c91f5eF0d4c7dA1E3f0D8E933B15aC6261";
+        // const etherInterface = new ethers.utils.Interface(zkEvmNftContract.abi);
 
 
         // Create a transactions array with one transaction object
         const transactions = [{
             to: contractAddress,
             data: etherInterface.encodeFunctionData("mintNFT", 
-         [ ownerAddress]),
+         [ "0x1Cb30cb181D7854F91c2410BD037E6F42130e860"]),
             // data:"0x",
             value: "0"
         }]
@@ -252,6 +260,7 @@ const AccountAbstractionProvider = ({children}) => {
         isAuthenticated,
 
         web3Provider,
+        signer,
 
         loginWeb3Auth,
         logoutWeb3Auth,
