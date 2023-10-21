@@ -7,7 +7,6 @@ import {
   ClaimList,
   ConnectWallet,
   MeetTeam,
-  MintModal,
   Minted,
   MumbaiTestnet,
   YourNFTs,
