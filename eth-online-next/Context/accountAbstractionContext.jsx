@@ -188,7 +188,7 @@ const AccountAbstractionProvider = ({ children }) => {
     setGelatoTaskId(undefined);
   }, [chainId]);
   // relay-kit implementation using Gelato
-  const relayTransaction = async () => {
+  const relayTransaction = async (transactions) => {
     if (web3Provider) {
       setIsRelayerLoading(true);
       console.log(chainId);
@@ -216,14 +216,14 @@ const AccountAbstractionProvider = ({ children }) => {
       const etherInterface = new ethers.utils.Interface(zkEvmNftContract.abi);
 
       // Create a transactions array with one transaction object
-      const transactions = [
-        {
-          to: contractAddress,
-          data: etherInterface.encodeFunctionData("mintNFT", [ownerAddress]),
-          // data:"0x",
-          value: "0",
-        },
-      ];
+      // const transactions = [
+      //   {
+      //     to: contractAddress,
+      //     data: etherInterface.encodeFunctionData("mintNFT", [ownerAddress]),
+      //     // data:"0x",
+      //     value: "0",
+      //   },
+      // ];
       const options = {
         isSponsored: false,
         //      gasLimit: '600000', // in this alfa version we need to manually set the gas limit
