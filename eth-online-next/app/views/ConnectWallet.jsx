@@ -1,17 +1,32 @@
 "use client";
+
+import { useAccountAbstraction } from "@/Context/accountAbstractionContext";
 import Image from "next/image";
 import meta from "@/assets/metamask.png";
 import tick from "@/assets/tick.svg";
 import React, { useState } from "react";
 
-const ConnectWallet = ({ walletAdd, ape, lens }) => {
+const ConnectWallet = ({ ape, lens }) => {
+  const {
+    loginWeb3Auth,
+    isAuthenticated,
+    balance,
+    chainId,
+    relayTransaction,
+    isRelayerLoading,
+    gelatoTaskId,
+    ownerAddress,
+  } = useAccountAbstraction();
   const [verifyAPE, SetVerifyAPE] = useState(false);
   const [verifylens, SetVerifylens] = useState(true);
   return (
     <>
       {/* wallet NOT connected */}
-      {!walletAdd && (
-        <div className="place-self-center py-3 px-6 bg-[#D9CBFF] rounded-3xl inSh grid grid-flow-col h-fit">
+      {!isAuthenticated && (
+        <div
+          onClick={loginWeb3Auth}
+          className="hover:cursor-pointer hover:bg-[#c9b6ff] place-self-center py-3 px-6 bg-[#D9CBFF] rounded-3xl inSh grid grid-flow-col h-fit"
+        >
           <Image src={meta} height={90} width={90} />
           <h1 className="text-[#ffffff] text-3xl font-medium text-end self-center">
             Connect Wallet
@@ -19,7 +34,7 @@ const ConnectWallet = ({ walletAdd, ape, lens }) => {
         </div>
       )}
       {/* Wallet Connected */}
-      {walletAdd && (
+      {isAuthenticated && (
         <div className="py-3 px-4 bg-[#D9CBFF] rounded-3xl inSh grid h-fit">
           <div className="grid grid-flow-col">
             {" "}
@@ -31,7 +46,7 @@ const ConnectWallet = ({ walletAdd, ape, lens }) => {
               className="place-self-end"
             />
             <h1 className="text-[#ffffff] text-xl font-medium text-start self-center">
-              {walletAdd.slice(0, 5)}...{walletAdd.slice(38, 44)}
+              {ownerAddress.slice(0, 5)}...{ownerAddress.slice(38, 44)}
             </h1>
           </div>
           <div className="grid grid-cols-2 gap-3">
