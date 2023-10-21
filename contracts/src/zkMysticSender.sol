@@ -42,12 +42,10 @@ contract zkMysticSender {
     IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
     uint32 public constant DESTINATION_NETWORK_ID = 0;
 
-    address public immutable i_zkMysticsNFTAddress;
     address public s_zkMysticsReceiverAddress;
 
-    constructor(address _polygonZkEVMBridge, address _zkMysticNFT) {
+    constructor(address _polygonZkEVMBridge) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
-        i_zkMysticsNFTAddress = _zkMysticNFT;
     }
 
     modifier isZeroAddress(address _address) {
