@@ -9,6 +9,7 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 contract DeployzkMysticReceiver is Script {
     HelperConfig public helperConfig = new HelperConfig();
     uint256 POLYGON_ZKEVM_CHAIN_ID = 1442;
+    uint256 GOERLI_CHAIN_ID = 5;
 
     function deployMysticReceiver(address _bridgeAddress, address _senderAddress) public returns (address) {
         vm.startBroadcast();
@@ -20,7 +21,12 @@ contract DeployzkMysticReceiver is Script {
     }
 
     function deployUsingConfigs() public returns (address) {
-        address senderAddress = helperConfig.getZkMysticSenderAddress(POLYGON_ZKEVM_CHAIN_ID);
+        address senderAddress;
+        if (block.chainid == GOERLI_CHAIN_ID) {
+            senderAddress = helperConfig.getZkMysticSenderAddress(POLYGON_ZKEVM_CHAIN_ID);
+        } else {
+            senderAddress = helperConfig.getZkMysticSenderAddress(GOERLI_CHAIN_ID);
+        }
         address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
 
         return deployMysticReceiver(bridgeAddress, senderAddress);
