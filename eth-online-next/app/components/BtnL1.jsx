@@ -40,7 +40,7 @@ const BtnL1 = ({ text }) => {
           onClick={relayTransaction}
           className="hover:cursor-pointer self-center bg-gradient-to-br font-bold from-[#F43CD9] via-[#8F00FF] to-[#36B8E1] place-self-start grid p-[1.5px]"
         >
-          <div className="bg-[#9D39A399] grid grid-flow-col h-full w-full px-6 py-3">
+          <div className="bg-[#9D39A399] grid grid-flow-col h-full w-full px-3 py-3">
             {gelatoTaskId ? (
               <>
                 <Image
@@ -49,7 +49,7 @@ const BtnL1 = ({ text }) => {
                   width={60}
                   className="place-self-center"
                 />
-                <h3 className="pl-1 place-self-center text-xl">
+                <h3 className="pl-1 place-self-center text-lg">
                   ApeCoin Holdings Verified
                 </h3>
                 <Image
@@ -67,27 +67,27 @@ const BtnL1 = ({ text }) => {
                   width={60}
                   className="place-self-center"
                 />
-                <h3 className="place-self-center text-2xl">Verifying</h3>
+                <h3 className="place-self-center text-xl">Verifying</h3>
                 <Image
                   src={ape}
                   height={60}
                   width={60}
                   className="place-self-center"
                 />
-                <h3 className="pl-1 place-self-center text-2xl">
+                <h3 className="pl-1 place-self-center text-xl">
                   ApeCoin Holdings
                 </h3>
               </>
             ) : (
               <>
-                <h3 className="place-self-center text-2xl">Verify</h3>
+                <h3 className="place-self-center text-xl">Verify</h3>
                 <Image
                   src={ape}
                   height={60}
                   width={60}
                   className="place-self-center"
                 />
-                <h3 className="pl-1 place-self-center text-2xl">
+                <h3 className="pl-1 place-self-center text-xl">
                   ApeCoin Holdings
                 </h3>
               </>
@@ -98,7 +98,8 @@ const BtnL1 = ({ text }) => {
       {gelatoTaskId && (
         <Link
           href={`https://relay.gelato.digital/tasks/status/${gelatoTaskId}`}
-          className=" underline"
+          className="underline mt-[-6px] place-self-center"
+          target="_blank"
         >
           Transaction Link
         </Link>

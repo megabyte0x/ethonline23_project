@@ -4,13 +4,13 @@ import { BtnL1, ClaimHash, LowerHeading, NftDisplay } from "../components";
 const ZkTestnet = () => {
   return (
     <div className="grid px-16 grid-flow-col gap-6">
-      <div className="self-center place-self-center grid grid-flow-row gap-6">
-        <LowerHeading text="Polygon ZK EVM Testnet" />
+      <div className="self-center place-self-start grid grid-flow-row gap-6 w-fit">
+        <LowerHeading text="ZK EVM Testnet" />
         <BtnL1 text="zkevm" />
       </div>
       <ClaimHash hash={claimH.hash} stat={claimH.stat} />
       <div className="blur-sm">
-        <NftDisplay text={nft.text} imag={nft.imag} />
+        <NftDisplay text="mint" imag={nft.imag} />
       </div>
     </div>
   );
