@@ -1,0 +1,138 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_polygonZkEVMBridge",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_zkMysticsSenderAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "ZkMystics__InvalidBridgeMessageSender",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ZkMystics__InvalidZkMyticsAddress",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ZkMystics__ZeroAddress",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "assetAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint32",
+        "name": "destinationNetwork",
+        "type": "uint32"
+      }
+    ],
+    "name": "ZkMystics__CheckStatusRequestCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "userAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "assetAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "assetType",
+        "type": "uint8"
+      },
+      {
+        "indexed": true,
+        "internalType": "bool",
+        "name": "result",
+        "type": "bool"
+      }
+    ],
+    "name": "ZkMystics__StatusChecked",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "i_polygonZkEVMBridge",
+    "outputs": [
+      {
+        "internalType": "contract IPolygonZkEVMBridge",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "i_zkMysticsSenderAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "originAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint32",
+        "name": "originNetwork",
+        "type": "uint32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "onMessageReceived",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  }
+]
