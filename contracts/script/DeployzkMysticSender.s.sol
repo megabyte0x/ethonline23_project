@@ -8,7 +8,6 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployzkMysticSender is Script {
     HelperConfig public helperConfig = new HelperConfig();
-    uint256 POLYGON_ZKEVM_CHAIN_ID = 1442;
 
     function deployMysticSender(address _bridgeAddress, uint32 _destinationid) public returns (address) {
         vm.startBroadcast();
