@@ -24,7 +24,7 @@ contract DeployzkMysticReceiver is Script {
         address senderAddress;
         if (block.chainid == GOERLI_CHAIN_ID) {
             senderAddress = helperConfig.getZkMysticSenderAddress(POLYGON_ZKEVM_CHAIN_ID);
-        } else if(block.chainid == POLYGON_ZKEVM_CHAIN_ID)) {
+        } else if (block.chainid == POLYGON_ZKEVM_CHAIN_ID) {
             senderAddress = helperConfig.getZkMysticSenderAddress(GOERLI_CHAIN_ID);
         } else {
             revert("Invalid chain id");

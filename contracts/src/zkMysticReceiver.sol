@@ -43,10 +43,7 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
     );
 
     IPolygonZkEVMBridge public immutable i_polygonZkEVMBridge;
-    uint32 public constant DESTINATION_NETWORK_ID = 1;
     address public immutable i_zkMysticsSenderAddress;
-
-    mapping(address => bool) public userAddressToMintNFT;
 
     constructor(address _polygonZkEVMBridge, address _zkMysticsSenderAddress) {
         i_polygonZkEVMBridge = IPolygonZkEVMBridge(_polygonZkEVMBridge);
@@ -54,8 +51,8 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
     }
 
     function onMessageReceived(address originAddress, uint32 originNetwork, bytes memory data) external payable {
-        if (msg.sender == address(i_polygonZkEVMBridge)) revert ZkMystics__InvalidBridgeMessageSender();
-        if (i_zkMysticsSenderAddress == originAddress) revert ZkMystics__InvalidBridgeMessageSender();
+        if (msg.sender != address(i_polygonZkEVMBridge)) revert ZkMystics__InvalidBridgeMessageSender();
+        if (i_zkMysticsSenderAddress != originAddress) revert ZkMystics__InvalidBridgeMessageSender();
 
         (address userAddress, address assetAddress, uint8 assetType) = abi.decode(data, (address, address, uint8));
 
