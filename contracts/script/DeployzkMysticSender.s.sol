@@ -8,6 +8,7 @@ import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployzkMysticSender is Script {
     HelperConfig public helperConfig = new HelperConfig();
+    uint256 POLYGON_ZKEVM_CHAIN_ID = 1442;
 
     function deployMysticSender(address _bridgeAddress, address _nftAddress) public returns (address) {
         vm.startBroadcast();
@@ -19,7 +20,7 @@ contract DeployzkMysticSender is Script {
     }
 
     function deployUsingConfigs() public returns (address) {
-        address nftAddress = helperConfig.getZkMysticNFTAddress();
+        address nftAddress = helperConfig.getZkMysticNFTAddress(POLYGON_ZKEVM_CHAIN_ID);
         address bridgeAddress = helperConfig.POLYGON_ZK_EVM_BRIDGE();
 
         return deployMysticSender(bridgeAddress, nftAddress);

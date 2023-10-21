@@ -61,8 +61,6 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
 
         bool result;
         uint256 balance;
-        bool _forceUpdateGlobalExitRoot = true;
-        bytes memory messageData;
 
         if (assetType == 1) {
             balance = IERC20(assetAddress).balanceOf(userAddress);
@@ -76,11 +74,5 @@ contract zkMysticReceiver is IBridgeMessageReceiver {
         }
 
         emit ZkMystics__StatusChecked(userAddress, assetAddress, assetType, result);
-
-        messageData = abi.encode(userAddress, result);
-
-        i_polygonZkEVMBridge.bridgeMessage(
-            DESTINATION_NETWORK_ID, i_zkMysticsSenderAddress, _forceUpdateGlobalExitRoot, messageData
-        );
     }
 }
