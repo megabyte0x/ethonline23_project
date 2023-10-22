@@ -1,6 +1,6 @@
 specVersion: 0.0.5
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: zkMysticReceiver
@@ -17,8 +17,8 @@ dataSources:
         - ZkMystics__StatusChecked
       abis:
         - name: zkMysticReceiver
-          file: ./abis/zkMysticReceiver.json
+          file: zkMysticReceiver/abis/zkMysticReceiver.json
       eventHandlers:
         - event: ZkMystics__StatusChecked(indexed address,indexed address,uint8,indexed bool)
           handler: handleZkMystics__StatusChecked
-      file: ./src/zk-mystic-receiver.ts
+      file: zkMysticReceiver/zkMysticReceiver.wasm
