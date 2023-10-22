@@ -1,7 +1,12 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
-
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 // type accountAbstractionContextValue = {
 //   ownerAddress?: string
@@ -18,34 +23,36 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 // }
 
 const initialState = {
-  isMintable: false
-}
-
+  isMintable: false,
+};
 
 const mintingContext = createContext(initialState);
 
 const useNFTMinting = () => {
-    const context = useContext(mintingContext)
+  const context = useContext(mintingContext);
 
-    if (!context) {
-        throw new Error('useNFTMinting should be used within a AccountAbstraction Provider')
-    }
-
-    return context
-}
-
-const MintingProvider = ({children}) => {
-    const [isMintable, setIsMintable] = useState(false)
-
-    const state = {
-        isMintable,
-        setIsMintable
-    }
-    return (
-        <mintingContext.Provider value={state}>
-            {children}
-        </mintingContext.Provider>
+  if (!context) {
+    throw new Error(
+      "useNFTMinting should be used within a AccountAbstraction Provider"
     );
-}
+  }
 
-export { useNFTMinting, MintingProvider}
+  return context;
+};
+
+const MintingProvider = ({ children }) => {
+  const [isMintable, setIsMintable] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+
+  const state = {
+    isMintable,
+    setIsMintable,
+    isValid,
+    setIsValid,
+  };
+  return (
+    <mintingContext.Provider value={state}>{children}</mintingContext.Provider>
+  );
+};
+
+export { useNFTMinting, MintingProvider };

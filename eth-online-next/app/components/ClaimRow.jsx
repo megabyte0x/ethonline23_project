@@ -9,16 +9,11 @@ import { ZKEVM_BRIDGE_TESTNET } from "@/constant/constants";
 import * as zkEvmBridge from "@/abis/zkEvm_bridge.json";
 
 const ClaimRow = ({ claim }) => {
-  const [isValid, setIsValid] = useState(false); // Use null as an initial state
+  // Use null as an initial state
   const [loading, setLoading] = useState(false);
-  const { setIsMintable } = useNFTMinting();
+  const { setIsMintable, isValid, setIsValid } = useNFTMinting();
   const { ownerAddress, isAuthenticated, signer } = useAccountAbstraction();
-  const bridgeContractZkevm = new ethers.Contract(
-    ZKEVM_BRIDGE_TESTNET,
-    zkEvmBridge.abi,
-    signer
-  );
-  console.log(`bridgeContract: ${bridgeContractZkevm}`);
+  // console.log(`bridgeContract: ${bridgeContractZkevm}`);
 
   const {
     ready_for_claim,
@@ -36,12 +31,12 @@ const ClaimRow = ({ claim }) => {
   query MyQuery {
     zkMysticsStatusCheckeds(
       where: {assetAddress: "0x75ab5ab1eef154c0352fc31d2428cef80c7f8b33", userAddress: $ownerAddress}
-    ) {
-      id
-      result
+      ) {
+        id
+        result
+      }
     }
-  }
-`;
+    `;
 
   const fetchGraph = useCallback(async () => {
     try {
@@ -78,6 +73,13 @@ const ClaimRow = ({ claim }) => {
 
   const zkEvmTransaction = async () => {
     if (ready_for_claim) {
+      const bridgeFactoryZkevm = new ethers.ContractFactory(
+        zkEvmBridge.abi,
+        zkEvmBridge.bytecode,
+        signer
+      );
+      const bridgeContractZkevm =
+        bridgeFactoryZkevm.attach(ZKEVM_BRIDGE_TESTNET);
       const baseURL = "https://bridge-api.public.zkevm-test.net";
       const proofAxios = await axios.get(`${baseURL}/merkle-proof`, {
         params: {
@@ -124,40 +126,43 @@ const ClaimRow = ({ claim }) => {
     <>
       {isAuthenticated &&
         (claim_tx_hash ? (
-          <div className="place-self-center grid grid-flow-col gap-6">
+          <div className="place-self-center grid grid-flow-col gap-6 px-3 w-full">
             {" "}
-            <h1 className="place-self-center text-xl">
+            <h1 className="place-self-start text-xl">
               {claim_tx_hash.slice(0, 5)}...{claim_tx_hash.slice(38, 44)}
             </h1>
-            <BtnL2 text="CLAIMED" />
+            <div className="place-self-end">
+              <BtnL2 type="mintZk" text="CLAIMED" />
+            </div>
           </div>
         ) : ready_for_claim ? (
-          <div className="place-self-center grid grid-flow-col gap-6">
+          <div className="place-self-center grid grid-flow-col gap-6 w-full">
             {" "}
-            <h1 className="place-self-center text-xl">
+            <h1 className="place-self-start text-xl">
               {" "}
               {tx_hash.slice(0, 5)}...{tx_hash.slice(38, 44)}
             </h1>
             <div
+              className="place-self-end"
               onClick={() => {
                 console.log("CLICKEDCLICKED");
                 handleClaim();
               }}
             >
               {" "}
-              <BtnL2 text="CLAIM" />
+              <BtnL2 type="mintZk" text="CLAIM" />
             </div>
           </div>
         ) : (
-          <div className="place-self-center grid grid-flow-col gap-6 ">
+          <div className="place-self-center grid grid-flow-col gap-6 w-full">
             {" "}
-            <h1 className="place-self-center text-xl">
+            <h1 className="place-self-start text-xl">
               {" "}
               {tx_hash.slice(0, 5)}...{tx_hash.slice(38, 44)}
             </h1>
             <div className="hover:cursor-not-allowed">
               {" "}
-              <BtnL2 text="Waiting..." />
+              <BtnL2 type="mintZk" text="Waiting..." />
             </div>
           </div>
         ))}

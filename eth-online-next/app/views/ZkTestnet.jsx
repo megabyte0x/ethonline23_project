@@ -10,7 +10,7 @@ const ZkTestnet = () => {
       </div>
       <ClaimHash hash={claimH.hash} stat={claimH.stat} />
       <div className="blur-sm">
-        <NftDisplay text="mint" imag={nft.imag} />
+        <NftDisplay text="mintZk" imag={nft.imag} />
       </div>
     </div>
   );

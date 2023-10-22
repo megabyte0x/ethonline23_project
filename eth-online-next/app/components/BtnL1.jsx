@@ -1,6 +1,7 @@
 "use client";
 import { useAccountAbstraction } from "@/Context/accountAbstractionContext";
-import React from "react";
+import { useNFTMinting } from "@/Context/mintingContext";
+import React, { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import push from "@/assets/pushlogo.webp";
@@ -12,15 +13,72 @@ import * as ccipSender from "@/abis/zkMystics_sender.json";
 import {
   ASSET_ADDRESS_GOERLI,
   ASSET_ADDRESS_SEPOLIA,
+  SENDER_MUMBAI,
   SENDER_ZKEVM,
 } from "@/constant/constants";
+import axios from "axios";
 
 const BtnL1 = ({ text }) => {
   const ethersInterface = new ethers.utils.Interface(ccipSender.abi);
-  const handleClickmum = () => {
+
+  // Use null as an initial state
+  const [loading, setLoading] = useState(false);
+  const { setIsMintable, isValid, setIsValid } = useNFTMinting();
+
+  const query = `
+  query MyQuery {
+    zkMysticsStatusCheckeds(
+      where: {assetAddress: "0x685d3F5e89Af1cf1eAe92AC4280Cd0699c4a98F8", userAddress: $ownerAddress}
+    ) {
+      id
+      result
+    }
+  }
+`;
+
+  const fetchGraph = useCallback(async () => {
+    try {
+      const res = await axios.post(apiUrl, {
+        query,
+        variables: { ownerAddress },
+      });
+      console.log(
+        ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+        res.data.data.zkMysticsStatusCheckeds[0]?.result,
+        "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
+      );
+      return res.data.data.zkMysticsStatusCheckeds[0]?.result;
+    } catch (error) {
+      console.log("Error fetching graph:", error);
+      return null;
+    }
+  }, []);
+
+  const apiUrl =
+    "https://api.studio.thegraph.com/query/48418/ethonline_sepolia/v0.0.1";
+
+  const pollForClaimStatus = async () => {
+    console.log("poll");
+    setLoading(true);
+    const interval = setInterval(async () => {
+      const result = await fetchGraph();
+      if (result !== null) {
+        setIsValid(result);
+        clearInterval(interval); // Stop polling once you have a result
+      }
+    }, 5000); // Poll every 5 seconds
+  };
+
+  useEffect(() => {
+    if (isValid === null || isValid === undefined) {
+      pollForClaimStatus(); // Start polling when isValid is null
+    }
+  }, [isValid]);
+
+  const handleClickmum = async () => {
     const txn = [
       {
-        to: "0xDcEaD2479751e87cE3b7F9d98e3B5FD55AA3496f",
+        to: SENDER_MUMBAI,
         data: ethersInterface.encodeFunctionData(
           "checkAssetStatusUsingChainlink",
           [ASSET_ADDRESS_SEPOLIA, 1]
@@ -29,6 +87,8 @@ const BtnL1 = ({ text }) => {
       },
     ];
     relayTransaction(txn);
+    await pollForClaimStatus();
+    setIsMintable(true);
   };
   const handleClickZK = () => {
     const txn = [
@@ -142,7 +202,7 @@ const BtnL1 = ({ text }) => {
         </>
       )}
       {text == "mumbai" && (
-        <>
+        <div className="grid grid-flow-row self-center place-self-start">
           <div
             onClick={handleClickmum}
             className="hover:cursor-pointer self-center bg-gradient-to-br font-bold from-[#F43CD9] via-[#8F00FF] to-[#36B8E1] place-self-start grid p-[1.5px]"
@@ -201,16 +261,18 @@ const BtnL1 = ({ text }) => {
               )}
             </div>
           </div>
-          {gelatoTaskId && (
-            <Link
-              href={`https://relay.gelato.digital/tasks/status/${gelatoTaskId}`}
-              className="underline mt-[-6px] place-self-center"
-              target="_blank"
-            >
-              Transaction Link
-            </Link>
-          )}
-        </>
+          <span className="place-self-center">
+            {gelatoTaskId && (
+              <Link
+                href={`https://relay.gelato.digital/tasks/status/${gelatoTaskId}`}
+                className="underline mt-[-6px] place-self-center"
+                target="_blank"
+              >
+                Transaction Link
+              </Link>
+            )}
+          </span>
+        </div>
       )}
     </>
   );
