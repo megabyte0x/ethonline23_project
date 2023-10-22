@@ -1,0 +1,27 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: zkMysticReceiver
+    network: sepolia
+    source:
+      address: "0xb978AE4bdA38445897De833E411C9ed65655a031"
+      abi: zkMysticReceiver
+      startBlock: 4537734
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - ZkMystics__CheckStatusRequestCreated
+        - ZkMystics__StatusChecked
+      abis:
+        - name: zkMysticReceiver
+          file: ./abis/zkMysticReceiver.json
+      eventHandlers:
+        - event: ZkMystics__CheckStatusRequestCreated(indexed address,indexed address,indexed uint32)
+          handler: handleZkMystics__CheckStatusRequestCreated
+        - event: ZkMystics__StatusChecked(indexed address,indexed address,uint8,indexed bool)
+          handler: handleZkMystics__StatusChecked
+      file: ./src/zk-mystic-receiver.ts

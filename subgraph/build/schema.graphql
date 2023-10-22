@@ -18,3 +18,23 @@ type ZkMystics__StatusChecked @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
+type ContractZkMystics__CheckStatusRequestCreated @entity(immutable: true) {
+  id: Bytes!
+  userAddress: Bytes! # address
+  assetAddress: Bytes! # address
+  destinationNetwork: BigInt! # uint32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ContractZkMystics__StatusChecked @entity(immutable: true) {
+  id: Bytes!
+  userAddress: Bytes! # address
+  assetAddress: Bytes! # address
+  assetType: Int! # uint8
+  result: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
