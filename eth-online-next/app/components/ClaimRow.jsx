@@ -67,15 +67,23 @@ const ClaimRow = ({ ready_for_claim, claim_tx_hash, tx_hash }) => {
     <>
       {isAuthenticated &&
         (claim_tx_hash ? (
-          <h1>Transaction has been claimed already</h1>
+          <div className="place-self-center grid grid-flow-col gap-6">
+            {" "}
+            <h1 className="place-self-center text-xl">{claim_tx_hash}</h1>
+            <BtnL2 text="CLAIMED" />
+          </div>
         ) : ready_for_claim ? (
-          <button onClick={pollForClaimStatus}>
-            Click to claim (button enabled)
-          </button>
+          <div className="place-self-center grid grid-flow-col gap-6">
+            {" "}
+            <h1 className="place-self-center text-xl">{tx_hash}</h1>
+            <BtnL2 text="CLAIM" onClick={pollForClaimStatus} />
+          </div>
         ) : (
-          <button onClick={pollForClaimStatus}>
-            Waiting for txnx to be completed. (button disabled)
-          </button>
+          <div className="place-self-center grid grid-flow-col gap-6">
+            {" "}
+            <h1 className="place-self-center text-xl">{tx_hash}</h1>
+            <BtnL2 text="Claiming..." className="hover:cursor-not-allowed" />
+          </div>
         ))}
     </>
   );

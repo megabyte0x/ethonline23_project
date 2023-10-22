@@ -46,7 +46,7 @@ const ClaimHash = ({ hash, stat }) => {
 
   return (
     <>
-      {!gelatoTaskId && (
+      {gelatoTaskId === undefined && (
         <div className="blur-sm bg-gradient-to-r from-[#F43CD9] via-[#8F00FF] to-[#36B8E1] self-center place-self-start grid p-[0.9px]">
           <div className="bg-[#564458] grid grid-flow-row h-full w-full px-12 py-3 gap-6">
             <h1 className="place-self-center text-4xl">0x058140cea</h1>
