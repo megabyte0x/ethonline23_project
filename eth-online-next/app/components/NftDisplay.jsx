@@ -4,6 +4,7 @@ import Image from "next/image";
 import loader from "@/assets/ethrev.gif";
 import { useNFTMinting } from "@/Context/mintingContext";
 import { useAccountAbstraction } from "@/Context/accountAbstractionContext";
+import imag2 from "@/assets/nftD.jpeg";
 
 const NftDisplay = ({ text, imag, link }) => {
   const { isMintable, setIsMintable, isValid, setIsValid } = useNFTMinting();
@@ -25,7 +26,7 @@ const NftDisplay = ({ text, imag, link }) => {
       {text == "mintZk" && (
         <div className="bg-[#564458] grid grid-flow-row p-2 w-fit gap-2">
           <Image
-            src={imag}
+            src={imag2}
             height={210}
             width={210}
             className="place-self-center shadow-2xl"
@@ -47,7 +48,7 @@ const NftDisplay = ({ text, imag, link }) => {
       {text == "mintMum" && (
         <div className="bg-[#564458] grid grid-flow-row p-2 w-fit gap-2">
           <Image
-            src={imag}
+            src={imag2}
             height={210}
             width={210}
             className="place-self-center shadow-2xl"

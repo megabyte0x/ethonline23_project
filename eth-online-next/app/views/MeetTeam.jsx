@@ -24,7 +24,11 @@ const MeetTeam = () => {
         imag={lilith}
         link="https://github.com/L-Pircy"
       />
-      <NftDisplay text="Mayank" imag={mayank} link="" />
+      <NftDisplay
+        text="Mayank"
+        imag={mayank}
+        link="https://github.com/megabyte0x"
+      />
     </div>
   );
 };
