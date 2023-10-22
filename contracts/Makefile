@@ -41,6 +41,14 @@ ifeq ($(findstring --network goerli,$(ARGS)),--network goerli)
 	NETWORK_ARGS := --rpc-url $(GOERLI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
 endif
 
+ifeq ($(findstring --network mumbai,$(ARGS)),--network mumbai)
+	NETWORK_ARGS := --rpc-url $(MUMBAI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGON_SCAN_API_KEY) -vvvv
+endif
+
+ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
+	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+endif
+
 # Commands for Local
 
 deployNFT:
@@ -55,13 +63,17 @@ deployReceiver:
 setReceiver:
 	@forge script script/Interaction.s.sol:SetReceiver $(NETWORK_ARGS)
 
+setDestinationChainSelector:
+	@forge script script/Interaction.s.sol:SetDestinationChainSelector $(NETWORK_ARGS)
 
 setUp:
-	make deployNFT && make deploySender && make deployReceiver && make setReceiver 
+	make deployNFT && make deploySender && make deployReceiver && make setReceiver && make setDestinationChainSelector
 
 checkStatusForERC20:
 	@forge script script/Interaction.s.sol:CheckStatusForERC20  $(NETWORK_ARGS)
 
+checkStatusForERC20UsingChainlink:
+	@forge script script/Interaction.s.sol:CheckStatusForERC20UsingChainlink  $(NETWORK_ARGS)
 
 # Commands for Testnet
 
