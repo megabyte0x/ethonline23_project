@@ -9,7 +9,7 @@ const MumbaiTestnet = () => {
       <LowerHeading text="Polygon Mumbai Testnet" />
       <BtnL1 text="mumbai" />
       {/* <Image src={loader} height={150} width={150} alt="loader" /> */}
-      <NftDisplay text={nft.text} imag={nft.imag} />
+      <NftDisplay text="mintMum" imag={nft.imag} />
       {/* <BtnL1 text="push" /> */}
     </div>
   );
