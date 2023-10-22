@@ -1,24 +1,24 @@
 specVersion: 0.0.5
 schema:
-  file: schema.graphql
+  file: ./schema.graphql
 dataSources:
   - kind: ethereum
-    name: Contract
-    network: goerli
+    name: zkMysticReceiver
+    network: sepolia
     source:
-      address: "0x9b4B2dBDcA68B536b0B017deaD4a676f0F7b4Cd6"
-      abi: Contract
-      startBlock: 9909520
+      address: "0xb978AE4bdA38445897De833E411C9ed65655a031"
+      abi: zkMysticReceiver
+      startBlock: 4537734
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - ContractZkMystics__StatusChecked
+        - ZkMystics__StatusChecked
       abis:
-        - name: Contract
-          file: Contract/abis/Contract.json
+        - name: zkMysticReceiver
+          file: ./abis/zkMysticReceiver.json
       eventHandlers:
         - event: ZkMystics__StatusChecked(indexed address,indexed address,uint8,indexed bool)
           handler: handleZkMystics__StatusChecked
-      file: Contract/Contract.wasm
+      file: ./src/zk-mystic-receiver.ts

@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "zkMysticReceiver": {
+      "address": "0xb978AE4bdA38445897De833E411C9ed65655a031",
+      "startBlock": 4537734
+    }
+  }
+}

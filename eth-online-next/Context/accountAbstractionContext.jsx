@@ -60,7 +60,7 @@ const useAccountAbstraction = () => {
 
 const AccountAbstractionProvider = ({ children }) => {
   const [ownerAddress, setOwnerAddress] = useState("");
-
+  const [safeAddress, setSafeAddress] = useState("");
   const [chainId, setChainId] = useState(initialChain.id);
 
   const [web3Provider, setWeb3Provider] = useState();
@@ -74,6 +74,7 @@ const AccountAbstractionProvider = ({ children }) => {
     setChainId(chain.id);
     setWeb3Provider(undefined);
     setSigner(undefined);
+    setSafeAddress("");
   }, [chain]);
 
   const [web3AuthModalPack, setWeb3AuthModalPack] = useState();
@@ -164,6 +165,7 @@ const AccountAbstractionProvider = ({ children }) => {
   const logoutWeb3Auth = () => {
     web3AuthModalPack?.signOut();
     setOwnerAddress("");
+    setSafeAddress("");
     setChainId(chain.id);
     setWeb3Provider(undefined);
     setGelatoTaskId(undefined);
@@ -188,7 +190,7 @@ const AccountAbstractionProvider = ({ children }) => {
     setGelatoTaskId(undefined);
   }, [chainId]);
   // relay-kit implementation using Gelato
-  const relayTransaction = async (transactions) => {
+  const relayTransaction = async (transactions = []) => {
     if (web3Provider) {
       setIsRelayerLoading(true);
       console.log(chainId);
@@ -203,8 +205,9 @@ const AccountAbstractionProvider = ({ children }) => {
       const safeAccountAbstraction = new AccountAbstraction(signer);
 
       await safeAccountAbstraction.init({ relayPack });
-      const safeAddress = await safeAccountAbstraction.getSafeAddress();
-      console.log("safeAdd:", safeAddress);
+      const safeAdd = await safeAccountAbstraction.getSafeAddress();
+      setSafeAddress(safeAdd);
+      console.log("safeAdd:", safeAdd);
 
       // const destinationAddress = '0x6C5B323C02E01218689D59f250BBdA6283edd3f7'
       // const withdrawAmount = ethers.utils.parseEther('0.00005').toString()
