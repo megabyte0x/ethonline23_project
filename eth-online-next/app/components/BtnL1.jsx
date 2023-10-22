@@ -12,31 +12,36 @@ import * as ccipSender from "@/abis/zkMystics_sender.json";
 import {
   ASSET_ADDRESS_GOERLI,
   ASSET_ADDRESS_SEPOLIA,
+  SENDER_ZKEVM,
 } from "@/constant/constants";
 
 const BtnL1 = ({ text }) => {
   const ethersInterface = new ethers.utils.Interface(ccipSender.abi);
   const handleClickmum = () => {
-    const txn = {
-      to: "0xDcEaD2479751e87cE3b7F9d98e3B5FD55AA3496f",
-      data: ethersInterface.encodeFunctionData(
-        "checkAssetStatusUsingChainlink",
-        [ASSET_ADDRESS_SEPOLIA, 1]
-      ),
-      value: "0",
-    };
+    const txn = [
+      {
+        to: "0xDcEaD2479751e87cE3b7F9d98e3B5FD55AA3496f",
+        data: ethersInterface.encodeFunctionData(
+          "checkAssetStatusUsingChainlink",
+          [ASSET_ADDRESS_SEPOLIA, 1]
+        ),
+        value: "0",
+      },
+    ];
     relayTransaction(txn);
   };
   const handleClickZK = () => {
-    const txn = {
-      to: "0xDcEaD2479751e87cE3b7F9d98e3B5FD55AA3496f",
-      data: ethersInterface.encodeFunctionData("checkAssetStatus", [
-        ASSET_ADDRESS_GOERLI,
-        true,
-        1,
-      ]),
-      value: "0",
-    };
+    const txn = [
+      {
+        to: SENDER_ZKEVM,
+        data: ethersInterface.encodeFunctionData("checkAssetStatus", [
+          ASSET_ADDRESS_GOERLI,
+          true,
+          1,
+        ]),
+        value: "0",
+      },
+    ];
     relayTransaction(txn);
   };
   const {
